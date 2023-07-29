@@ -1,0 +1,8 @@
+/* This file completes the definitions of some types and functions
+ * for assert, which are declared in assert.h.
+ */
+#include <assert.h>
+
+$atomic_f void assert(_Bool expr){
+  $assert(expr);
+}

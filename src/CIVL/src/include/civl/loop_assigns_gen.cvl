@@ -1,0 +1,76 @@
+#ifndef _CIVL_LOOP_ASSIGNS_GEN_
+#define _CIVL_LOOP_ASSIGNS_GEN_
+
+#include <civlc.cvh>
+#include <loop_assigns_gen.cvh>
+#include <mem.cvh>
+
+#pragma CIVL ACSL 
+
+struct _loop_write_set {
+  $mem widened;     // all the widened references
+  $mem havocables;  // the references that can be safely havoced at the current state
+  $mem samples;     // all the collected memory location references, some of them may have been widened
+};
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$state_f $loop_write_set $loop_write_set_new() {
+  $mem m = $mem_new();
+  $loop_write_set ws;
+  
+  ws.widened = m;
+  ws.havocables = m;
+  ws.samples = m;
+  return ws;
+}
+
+$state_f $loop_write_set $loop_write_set_union($loop_write_set ws, $mem iter_mem) {
+  ws.samples = $mem_union(ws.samples, iter_mem);
+  ws.havocables = $mem_union(ws.widened, iter_mem);
+  return ws;
+}
+
+$atomic_f _Bool $loop_write_set_havoc($loop_write_set ws) {
+  return $mem_havoc(ws.havocables);
+}
+
+/* Implementation details for widening a $loop_write_set ws: 
+ *   For each group g in samples, 1) if the group has no change after
+ *   last time it got widening, do not widening it again, no updates
+ *   for it ; 2) if the group has changed but the widening makes no
+ *   difference, no updates for it; 3) otherwise, widening the group,
+ *   update the group in sample set, widened set and the havocable
+ *   set.
+ *   
+ */
+$state_f $loop_write_set $loop_write_set_widening($loop_write_set ws) {
+  int num_sample_groups = $mem_num_groups(ws.samples);
+  $mem * sample_groups = ($mem *)$malloc($here, sizeof($mem) * num_sample_groups);
+  $mem widened_samples = $mem_new();
+  
+  $mem_groups(ws.samples, sample_groups);
+  for (int i = 0; i < num_sample_groups; i++) {
+    $mem old_widened_group = $mem_get_group(ws.widened, sample_groups[i]);
+   
+    if (!$mem_equals(old_widened_group, sample_groups[i])) {
+      // if the group has changed from the last time widening, do the
+      // widening again ... 
+      $mem widened_sample_group = $mem_widening(sample_groups[i]);
+      
+      if (!$mem_equals(widened_sample_group, sample_groups[i])) 
+	// if widening succeeds, unions the widened group into the widened set
+	ws.widened = $mem_union(widened_sample_group, ws.widened);
+      widened_samples = $mem_union(widened_samples, widened_sample_group);
+    } else 
+      widened_samples = $mem_union(widened_samples, sample_groups[i]);
+  }
+  ws.havocables = $mem_union(ws.havocables, ws.widened);
+  ws.samples = widened_samples;
+  $free(sample_groups);
+  return ws;
+}
+
+#endif
+

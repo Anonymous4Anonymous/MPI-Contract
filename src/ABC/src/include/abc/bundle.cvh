@@ -1,0 +1,52 @@
+/* This header file contains the data types and function prototypes for bundle.
+ */
+
+#ifndef _BUNDLE_
+#define _BUNDLE_
+
+/* includes civlc.cvh because this library references $operation */
+#include<op.h>
+#pragma CIVL ACSL 
+/* *********************** Types *********************** */
+
+/* A system type for bundling any slice of memory into
+ * a single value. */
+typedef struct _bundle $bundle;
+
+/* *********************** Functions *********************** */
+
+/* Returns the size of the given bundle b. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system int $bundle_size($bundle b);
+
+/* Creates a bundle from the memory region specified by
+ * ptr and size, copying the data into the new bundle */
+/*@ depends_on \access(ptr);
+  @ executes_when \true;
+  @*/
+$system $bundle $bundle_pack(const void *ptr, int size);
+
+/* Copies the data out of the bundle into the region specified */
+/*@ depends_on \access(ptr);
+  @ executes_when \true;
+  @*/
+$system void $bundle_unpack($bundle bundle, void *ptr);
+
+/* Unpacks the bundle and applies the specified operation on the content of the bundle.
+ * For every binary operation defined in &operation, the content of the bundle will be used as the left operand 
+ * and buf will be used as the right operand. The result of the operation is stored in result once is it is done. 
+ * 
+ * Requires buf and result are pointers-to-T;
+ *          the bundle--data contains sizeof(T) * count amount of objects;
+ *          \valid(buf + (0 .. count-1) && \valid(result + (0 .. count-1);
+ *          \separate(buf, result);
+ */     
+/*@ depends_on \access(buf);
+  @ depends_on \access(result);
+  @ executes_when \true;
+  @*/
+$atomic_f void $bundle_unpack_apply($bundle data, void *buf, $operation op, int count, void *result);
+
+#endif

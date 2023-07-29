@@ -1,0 +1,89 @@
+/* stdio.cvl: a stateless I/O library similar to the C standard library stdio.
+ * The functions defined here are similar to those in stdio, but take an extra
+ * argument of type $filesystem.   This is a handle type.   A filesystem object
+ * encapsulates the state of the entire file system: all files and their contents.
+ *
+ */
+ #ifndef __STDIO_CVL__
+ #define __STDIO_CVL__
+ 
+#include <civlc.cvh>
+#include <stdio.h>
+#include<civl-stdio.cvh>
+#include <seq.cvh>
+
+#pragma CIVL ACSL 
+
+/* ******************************* Types ******************************* */
+
+/* Represents an actual file: something with a name and contents.
+ * The name is a string (array of char).  The contents is an
+ * array of strings: each entry is a "chunk" of the file; the
+ * file may be viewed as a concatenation of those chunks.
+ *
+ * A "point" in the file is represented by an ordered pair
+ * of integers (chunkIndex, characterIndex).
+ *
+ * The flags all have int type instead of boolean because
+ * CVC3 does not support tuples with boolean components.
+ * Zero is used for false, one for true.
+ * A file is an output file if it is ever written to.
+ * A file is an input file if it is ever read before being written to.
+ * A file can be both an input and an output file.
+ * A file is either a binary or text file.  The kind is determined
+ * by how the file is opened.
+ * A file is either an ordinary character file or a wide character
+ * file.  The orientation is determined by the first access to the
+ * file.
+ */
+struct $file {
+  char name[];        /* name of file */
+  char contents[][];  /* list of strings which form file contents */
+  int isOutput;       /* is this an output file? */
+  int isInput;        /* is this an input file? */
+  int isBinary;       /* is this a binary file (not text)? */
+  int isWide;         /* does this file have wide orientation? */
+  int length;
+};
+
+/* A file system: a set of files.    The files in the array can be
+ * sorted in some canonical way.  $filesystem is a handle type. */
+struct CIVL_filesystem {
+  $scope scope;
+  $file files[];
+}; 
+ 
+
+/* Implements the C notion of a FILE, which is really a reference
+ * into a particular point of an actual file.  Even if you are just
+ * reading the file, this FILE object changes since it contains a reference
+ * to the point of file you just read.  
+ */
+struct FILE {
+  $file *file;    // the actual file to which this refers 
+  $filesystem fs; // file system to which this FILE is associated
+  int pos1;       // the chunk index (first index) in the contents
+  int pos2;       // the character index (second index) in the contents
+  CIVL_File_mode mode;  // stream mode
+  int isOpen;     // is this FILE open (0 or 1)?
+};
+
+/* Creates a new empty file system, returning a handle to it. */
+/*@ depends_on \nothing;
+  @ assigns \nothing;
+  @ reads \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $filesystem $filesystem_create($scope scope){
+  $filesystem fileSys=($filesystem)$malloc(scope, sizeof(struct CIVL_filesystem));
+
+  fileSys->scope=scope;
+  $seq_init(&fileSys->files, 0, NULL);
+  return fileSys;
+}
+
+void _fflush(void){
+  return;
+}
+
+#endif

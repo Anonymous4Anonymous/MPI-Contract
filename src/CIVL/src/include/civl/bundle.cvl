@@ -1,0 +1,27 @@
+/* This file completes the definitions of some types and functions
+ * for bundle, which are declared in bundle.cvh.
+ */
+
+#ifndef __CIVLC_BUNDLE__
+#define __CIVLC_BUNDLE__
+#include<bundle.cvh>
+#include<pointer.cvh>
+
+$atomic_f void $bundle_unpack_apply($bundle data, void *buf, $operation op, int count, void *result) {
+  $assert(buf != result, "Input pointer %p and output pointer %p shall not point to the same memory "
+	  "location.", buf, result);
+  if (count > 0) {
+    size_t type_size;
+    type_size = $bundle_size(data) / count;
+
+    $bundle_unpack(data, result);
+    for (int i = 0; i < count; i++) {
+      void * oprand0 = $pointer_add(result, i, type_size);
+      void * oprand1 = $pointer_add(buf, i, type_size);
+      
+      $apply(oprand0, op, oprand1, oprand0);
+    }
+  }
+}
+
+#endif

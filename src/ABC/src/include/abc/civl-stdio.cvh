@@ -1,0 +1,127 @@
+#ifndef _CIVL_IO_
+#define _CIVL_IO_
+#include<civlc.cvh>
+#pragma CIVL ACSL 
+/* ******************************* Types ******************************* */
+
+/* There are 16 modes, and they must appear in this order to be
+ * consistent with the system function Java code. */
+typedef enum _CIVL_File_mode {
+  CIVL_FILE_MODE_R,    // "r", open text file for reading
+  CIVL_FILE_MODE_W,    // "w", truncate to zero length or create text file for writing
+  CIVL_FILE_MODE_WX,   // "wx", create text file for writing
+  CIVL_FILE_MODE_A,    // append; open or create text file for writing at end-of-file
+  CIVL_FILE_MODE_RB,   // open binary file for reading
+  CIVL_FILE_MODE_WB,   // truncate to zero length or create binary file for writing
+  CIVL_FILE_MODE_WBX,  // create binary file for writing
+  CIVL_FILE_MODE_AB,   // append; open or create binary file for writing at end-of-file
+  CIVL_FILE_MODE_RP,   // open text file for update (reading and writing)
+  CIVL_FILE_MODE_WP,   // truncate to zero length or create text file for update
+  CIVL_FILE_MODE_WPX,  // create text file for update
+  CIVL_FILE_MODE_AP,   // append; open or create text file for update, writing at end-of-file
+  CIVL_FILE_MODE_RPB,  // open binary file for update (reading and writing)
+  CIVL_FILE_MODE_WPB,  // truncate to zero length or create binary file for update
+  CIVL_FILE_MODE_WPBX, // create binary file for update
+  CIVL_FILE_MODE_APB   // append; open or create binary file for update, writing at end-of-file
+} CIVL_File_mode;
+
+typedef struct FILE FILE;
+
+/* Represents an actual file: something with a name and contents.
+ * The name is a string (array of char).  The contents is an
+ * array of strings: each entry is a "chunk" of the file; the
+ * file may be viewed as a concatenation of those chunks.
+ *
+ * A "point" in the file is represented by an ordered pair
+ * of integers (chunkIndex, characterIndex).
+ *
+ * The flags all have int type instead of boolean because
+ * CVC3 does not support tuples with boolean components.
+ * Zero is used for false, one for true.
+ * A file is an output file if it is ever written to.
+ * A file is an input file if it is ever read before being written to.
+ * A file can be both an input and an output file.
+ * A file is either a binary or text file.  The kind is determined
+ * by how the file is opened.
+ * A file is either an ordinary character file or a wide character
+ * file.  The orientation is determined by the first access to the
+ * file.
+ */
+typedef struct $file $file;
+
+/* A file system: a set of files.    The files in the array can be
+ * sorted in some canonical way.  $filesystem is a handle type. */
+typedef struct CIVL_filesystem *$filesystem; 
+
+/* Functions */
+
+/* Converts a mode string to the enumerated type CIVL_File_mode.
+ * An exception is thrown if the mode string is not one of those
+ * specified in the C11 Standard. */
+/*@ depends_on \access(modeString);
+  @ executes_when \true;
+  @*/
+$system[stdio] CIVL_File_mode CIVL_File_stringToMode(char * modeString);//mode not string-literal
+
+/* Creates a new empty file system, returning a handle to it. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $filesystem $filesystem_create($scope scope);
+
+/* Deallocates any data associated to the file system, and makes
+ * the handle undefined */
+/*@ depends_on \access(fs);
+  @ executes_when \true;
+  @*/
+$system[stdio] void $filesystem_destroy($filesystem fs);
+
+/* Opens a file f, creates a new FILE F pointing into f, and returns
+ * a pointer to F.  Will create f if f does not already exist or
+ * if mode is write.
+ *
+ * F is allocated in the heap specified by the file system.
+ * It will be freed by a close operation on F, or when the
+ * scope is exited.
+ *
+ * See C11 Sec. 7.21.5.3.   The modes currently supported
+ * are: 
+ *   "r":  open text file for reading; fails if file does
+ *         not exist //if fails return NULL
+ *   "w":  truncate to 0 length if file exists and
+ *         open for writing, or create new empty text file
+ *         for writing if file does not yet exist
+ *   "wx": create text file for writing with exclusive access;
+ *         fails if file exists,
+ *   "a":  open or create text file in append mode; all writes
+ *         will append to end of file regardless of calls
+ *         to fseek
+ *   "r+": open/create text file for reading and writing
+ *         access to file must follow rules specified
+ *         in Standard par. 7
+ *
+ */
+/*@ depends_on \access(fs, filename);
+  @ executes_when \true;
+  @*/
+$system[stdio] FILE * $fopen($filesystem fs, const char * restrict filename,
+			CIVL_File_mode mode);
+
+/*@ depends_on \access(file);
+  @ executes_when \true;
+  @*/
+$system[stdio] int $civl_text_file_length($filesystem fs, char* file);
+
+int $text_file_length(char* file);
+
+/* This assumes there is some output variable of type
+ * array-of-$file, and copies the output files into that
+ * output array.  The parameter output should be a pointer
+ * to element 0 of that array.
+ */
+/*@ depends_on \access(fs, output);
+  @ executes_when \true;
+  @*/
+$system[stdio] void $filesystem_copy_output($filesystem fs, $file * output);
+
+#endif

@@ -1,0 +1,143 @@
+#ifndef __CIVL_CIVLPTHREAD__
+#define __CIVL_CIVLPTHREAD__
+
+#include <pthread.h>
+#include <civl-pthread.cvh>
+#include <civlc.cvh>
+#include <seq.cvh>
+
+/* pthread_t struct definition
+  Description: The pthread_t is a struct containing a $proc variable as well as a thread attribute which defines
+  its interactions with other threads. It encapsulates the $proc and allows attributes to apply to it.
+  Fields: thr: the $proc variable that is the heart of the thread
+  attr: see above
+*/
+
+struct _pthread_t{
+  $proc thr;
+  const pthread_attr_t attr;
+  _Bool terminated;
+  void** exitValue;
+};
+
+/* pthread_attr_t struct definition
+  Description: This struct corresponds to the pthread_attr_t which is the attribute of a pthread_t. It's fields
+  define the way the pthread_t is able to interact (join/detach), (memory capacity), (scope) etc.
+  
+  Fields:
+  int detachstate: Defines a threads ability to join with two values: PTHREAD_CREATE_DETACHED and PTHREAD_CREATE_JOINABLE
+  int inheritsched: The inheritance scheduling policy of the thread
+  int contentionscope: Defines the contention scope of the thread
+  int schedpolicy: Determines the scheduling policy of the thread
+  
+*/
+struct _pthread_attr_t{
+  int detachstate;
+  int inheritsched;
+  int contentionscope;
+  int schedpolicy;
+  //sched_param param;
+};
+
+struct _pthread_gpool_t{
+  pthread_t threads[];
+};
+
+struct _pthread_pool_t{
+  $pthread_gpool_t gpool; 
+  $proc tid;
+  pthread_t * thread;
+};
+
+$atomic_f $pthread_gpool_t $pthread_gpool_create($scope scope){
+  $pthread_gpool_t gpool=($pthread_gpool_t)$malloc(scope, sizeof(struct _pthread_gpool_t));
+
+  $seq_init(&gpool->threads, 0, NULL);
+  return gpool;
+}
+
+$atomic_f void $pthread_gpool_destroy($pthread_gpool_t gpool){
+  $free(gpool);
+}
+
+$atomic_f $pthread_pool_t $pthread_pool_create_main($scope scope, $pthread_gpool_t gpool){
+  pthread_t thread;
+  
+  thread.thr = $self;
+  thread.attr.detachstate = PTHREAD_CREATE_JOINABLE;
+  thread.attr.inheritsched = 0;
+  thread.attr.contentionscope = 0;
+  thread.attr.schedpolicy = 0;
+  thread.terminated = $false;
+  thread.exitValue = NULL;
+  $pthread_gpool_add(gpool, &thread);
+  return $pthread_pool_create(scope, gpool);
+}
+
+$atomic_f $pthread_pool_t $pthread_pool_create($scope scope, $pthread_gpool_t gpool){
+  $pthread_pool_t pool=($pthread_pool_t)$malloc(scope, sizeof(struct _pthread_pool_t));
+
+  pool->gpool=gpool;
+  pool->tid=$self;
+
+  int nthreads=$seq_length(&gpool->threads);
+
+  for(int i=0; i<nthreads; i++){
+    pthread_t thread=gpool->threads[i];
+
+    if(!thread.terminated && thread.thr==$self){
+      pool->thread=&(gpool->threads[i]);
+      break;
+    }
+  }
+  return pool;
+}
+
+$atomic_f void $pthread_pool_destroy($pthread_pool_t pool){
+  $free(pool);
+}
+
+$atomic_f void $pthread_pool_terminates($pthread_pool_t pool, void* value){
+  $pthread_gpool_t gpool=pool->gpool;
+  int nthreads=$seq_length(&gpool->threads);
+  int i;
+
+  for(i=0; i<nthreads; i++){
+    pthread_t *thread=&(gpool->threads[i]);
+    
+    if(!thread->terminated && thread->thr==pool->tid){
+      thread->terminated = $true;
+      break;
+    }
+  }
+  /*if(i<nthreads)
+    $seq_remove(&gpool->threads, i, NULL, 1);*/
+}
+
+$atomic_f _Bool $pthread_pool_is_terminated($pthread_pool_t pool, $proc pid){
+  if(pid==$proc_null)
+    return $false;
+
+  $pthread_gpool_t gpool=pool->gpool;
+  int nthreads=$seq_length(&gpool->threads);
+  int i;
+
+  for(i=0; i<nthreads; i++){
+    pthread_t thread=gpool->threads[i];
+    
+    if(!thread.terminated && thread.thr==pid){
+      return thread.terminated;
+    }
+  }
+  
+  return $true;
+}
+
+
+$atomic_f void $pthread_exit(void *value_ptr, $pthread_pool_t pool){
+  $pthread_pool_terminates(pool, value_ptr);
+  $free(pool);
+  $exit();
+}
+
+#endif

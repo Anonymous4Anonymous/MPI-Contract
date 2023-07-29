@@ -1,0 +1,157 @@
+/* This header file contains datatypes and function prototypes for
+ * collations.
+ *
+ */
+#ifndef _COLLATE_
+#define _COLLATE_
+#pragma CIVL ACSL
+#include <bundle.cvh>
+
+
+/************************** Datatypes: **************************/
+/* _gcollator: An invisible shared collation object;
+ * $gcollator: A handle to the shared collation object;
+ *
+ * 
+ * A global collation object sematically maintains a queue of collate
+ * states.
+ *
+ */
+typedef struct _gcollator * $gcollator;
+
+/* _collator: An invisible local collation handle to a shared
+ * _gcollator;
+ * $collator: A local handle to a _collator object;
+ *
+ * A local collation hanlde is an object hold by a process. It is used
+ * to access the global collation object through a set of
+ * interfaces. Sematically how does the handle access the global
+ * collation object is opaque from outside of the library.
+ */
+typedef struct _collator  * $collator;
+
+/* _gcollate_state: The object represents an element of the queue
+ * maintained by a _gcollator.
+ *
+ * $gcollate_state: A reference to the _gcollate_state;
+ *
+ */
+typedef struct _gcollate_state * $gcollate_state;
+
+/*
+ * $collate_state: A handle mainly wraps a $gcollate_state and some
+ * other meta information, e.g. place.
+ *
+ * Semantically, this is the only object for a process to access a
+ * collate state. The access is restircted by only using interfaces.
+ */
+typedef struct _collate_state $collate_state;
+
+/********************* Function prototypes: *********************/
+/* API for creating a $gcollator: */
+$atomic_f $gcollator $gcollator_create($scope scope, int nprocs);
+
+/* API for destroying a $gcollator, all referred gcollate states will
+   be destroyed: */
+$atomic_f void $gcollator_destroy($gcollator gc);
+
+/* API for creating a $collator: */
+$atomic_f $collator  $collator_create($gcollator gcollator, $scope scope, int place);
+/* $collator can be destroyed by calling $free(..) */
+
+/* Take a snapshot on the current state. Returns the collate state
+ * which contains the snapshot. This function allows processes commit
+ * their snapshots collectively. The final collate state will be the
+ * state consists of snapshots from all participant processes, one for
+ * each. The collate state is always a valid program state as long as
+ * it consists of at least one snapshot.
+ *
+ *
+ * Pre-conditions:
+ *   scope must be reachable from the call stack of the calling
+ *   process.
+ *
+ *   all participant processes P must be peers, i.e. for each
+ *   procecess p in P, p is spawned by another process p' and p' is
+ *   not in P.
+ *
+ *
+ * Post-conditions: 
+ *   There is a process set P which represents all processes that
+ *   already commit their snapshots to the collate state cp, cp has
+ *   size(P) live processes (a live process has non-empty call stack).
+ *   For each process p in P, its' snapshot in cp is a process state
+ *   whose pid is same as its' place in the collator. cp is always a
+ *   valid state for P.
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system $pure void $collate_snapshot($collate_state cp, int nprocs, $scope scope);
+
+/* This function is a collective function. It collectively completes a
+ * collate state. 
+ *
+ * A collate state is a valid state consists of n processes, where n
+ * is in between 1 and nprocs, when n participant processes called
+ * this function.
+ *
+ * For one participant process, if it calls this function m times, it
+ * will get m differen collate states. A collate state reserves the
+ * current program state for the calling process until the collate
+ * state is freed.
+ */
+$atomic_f $collate_state $collate_arrives($collator c, $scope scope);
+
+/* Collectively free a collate state. The last process will be
+ * responsible for dequeue the collate state at the head of the queue.
+ *
+ * A process is not allowed to access a freed collate state.
+ *  
+ * If there is no arrived collate state by the process, it should
+ * report an error.
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $pure void $collate_departs($collator c, $collate_state cs);
+
+/* Tests if a set of participants defined by a $range have all arrived
+ * the specific $collate_entry referenced by cp.
+ */
+/*@ depends_on \access(&cp);
+  @ executes_when \true;
+  @*/
+$system $pure $state_f _Bool $collate_arrived($collate_state cp, $range range);
+
+
+/* Equivalent to $arrived(cp, r') where r' represents the whole set of
+ * participants in the specific $collate_entry referenced by cp. 
+ */
+/*@ depends_on \read(&cp);
+  @ executes_when \true;
+  @*/
+$pure $system _Bool $collate_complete($collate_state cp);
+
+/* An interface for checking attributes among a group of processes
+   that all of the processes have the same value of the given
+   attributes collectively. */
+/*@ depends_on \access(&c);
+  @ executes_when \true;
+  @*/
+$atomic_f $pure $bundle $collate_check($collator c, $bundle attribute);
+
+/* Marks the status of entering the collator to be true. */
+$atomic_f void $collator_enters($collator collator);
+
+/* Checks if the given processes in the range have all entered the collator. */
+$atomic_f _Bool $collator_has_entered($collator colaltor, $range range);
+
+/** returns the state reference. */
+/*@ depends_on \nothing;
+  @ executes_when \true; */
+$pure $system $atomic_f $state $collate_get_state($collate_state state);
+
+#endif
+
+

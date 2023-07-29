@@ -1,0 +1,165 @@
+#ifndef _MEM_
+#define _MEM_
+#include <civlc.cvh>
+#pragma CIVL ACSL
+/* A mem object is an immutable value representing a set of memory
+   locations.  The mem library provides the $mem type and a set of
+   operations on mem objects.
+   
+   In CIVL-C, each process has, as part of its state, a "read stack"
+   and a "write stack".  Each stack consists of mutable stack entries.
+   Each stack entry has a mem field, which is updated automatically each
+   time the process performs a read or write.  When the process reads
+   memory location l, every entry on the read stack is updated with
+   new mem values that are obtained by adding l to the old values.
+   Similarly, when a process writes l, every entry on the write stack
+   is so updated.
+   
+   New entries can be pushed onto the stacks using functions provided
+   here.  Similarly, each stack can be popped and the final mem value
+   of the popped entry can be retrieved.   These functions are useful
+   for many things, such as checking for data races in multi-threaded
+   programs.
+   
+   Note that $mem values can be created by casting a pointer expression
+   to $mem. Examples:
+   
+   int x;
+   $mem m1 = ($mem)&x;
+   int a[10];
+   $mem m2 = ($mem)&a[0]; // just the bits of "a[0]"
+   $mem m3 = ($mem)&a; // all locations in a: a[0..9]
+   $mem m4 = ($mem)a[0..9];
+   $mem_equals(m3, m4); // true 
+ */
+
+/* **************** Functions to create $mem objects  **************** */
+
+/* Pushes a new entry onto the write stack of the calling process.
+   The mem field of the new entry will be the empty mem. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$system void $write_set_push();
+
+/* Pops the top entry from the calling process' write stack.  The mem
+   field of that entry is returned.  Behavior is undefined if the write
+   stack is empty. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$system $mem $write_set_pop();
+
+/* Returns the mem field of the top entry of the write stack of the
+   calling process. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$state_f $system $mem $write_set_peek();
+
+/* Pushes a new entry onto the read stack of the calling process.
+   The mem field of the new entry will be the empty mem. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$system void $read_set_push();
+
+/* Pops the top entry from the calling process' read stack.  The mem
+   field of that entry is returned.  Behavior is undefined if the read
+   stack is empty. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$system $mem $read_set_pop();
+
+/* Returns the mem field of the top entry of the read stack of the
+   calling process. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$state_f $system $mem $read_set_peek();
+
+/* Returns the empty mem object. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$atomic_f $system $mem $mem_empty();
+
+/* A predicate that holds iff the two mem values represent the same set of
+   memory locations. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $system _Bool $mem_equals($mem m0, $mem m1);
+
+/* A predicate that holds iff the set of memory location represented
+   by "super" contains the set of memory locations represented by
+   "sub". */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $system _Bool $mem_contains($mem super, $mem sub);
+
+/* Tests if two $mem objects have no overlap. Returns the condition that is
+   true iff the two $mem objects have no overlap.
+   
+   If the returned condition cannot be proved valid at the state where a call
+   to this function returns, the two output arguments: "out0" and "out1" will 
+   be assigned two $mem type values which is a pair of memory locations that
+   have overlap.
+ */
+/*@ depends_on \write(out0, out1);
+  @ executes_when \true;
+  @*/
+$atomic_f $system _Bool $mem_no_intersect($mem m0, $mem m1, 
+					  $mem *out0, $mem *out1);
+
+/* Returns the mem object which represents the set of memory locations
+   which is the union of the set of locations represented by mem0 and
+   the set of locations represented by mem1. */
+/*@ depends_on \nothing; 
+  @ executes_when \true; 
+  @*/
+$atomic_f $system $mem $mem_union($mem mem0, $mem mem1);
+
+/* Returns a mem object which represents a set of memory locations
+   that contains the union of the set of locations represented by mem0
+   and the set of locations represented by mem1.  The over-approximation
+   to the union is obtained by some appropriate "widening" operator
+   that is used to force convergence of an analysis. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $system $mem $mem_union_widening($mem, $mem);
+
+
+// TODO: POR contract for the following two functions are incorrect
+//       one must be able to express the set of memory locations in the $mem object in POR
+//       contract
+
+/* Havocs (assigns arbitrary values to) all memory locations in the
+   set represented by m. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $system void $mem_havoc($mem m);
+
+/* Returns a mem object which represents a set of memory locations
+   which contains the set of memory locations represented by m.
+   The set returned is an over-approximation of m.  It has been
+   suitably "widened" to obtain convergence. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f $system $mem $mem_unary_widening($mem m);
+
+/* Assigns (in the current state) each memory location l in m, the value
+   that l holds in state s.  This assumes that there is a close
+   correspondence between the current state and state s, so that a 
+   mapping between the locations in the two states can be established. */
+/*@ depends_on \nothing;   // \access($mem_to_pointers($mem m))
+  @ executes_when \true;
+  @*/
+$atomic_f $system void $mem_assign_from($state s, $mem m);
+
+#endif

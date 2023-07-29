@@ -1,0 +1,86 @@
+/* CIVL model of stdlib.c */
+
+#ifndef __STDLIB_CIVL__
+#define __STDLIB_CIVL__
+#include<stdlib.h>
+#include<stdio.h>
+#include <pointer.cvh>
+#include <bundle.cvh>
+#include<civlc.cvh>
+
+void swap(void * a, void * b, size_t size) {
+  $bundle bun_a = $bundle_pack(a, size);
+  $bundle bun_b = $bundle_pack(b, size);  
+
+  $bundle_unpack(bun_a, b);
+  $bundle_unpack(bun_b, a);
+}
+
+void qsort(void *base, size_t n, size_t es, 
+	   int (*cmp)(const void*, const void*)) {   
+  for (int i = 1; i < n; i++) {
+    for (int j = i; j > 0; j--) {
+      void * p_j_1 = $pointer_add(base, j-1, es);
+      void * p_j = $pointer_add(base, j, es);
+      int comp = cmp(p_j_1, p_j);
+
+      if (comp <= 0) continue;
+      else swap(p_j_1, p_j, es);
+    }
+  }
+}
+
+$atomic_f void free(void*ptr){
+  $free(ptr);
+}
+
+$atomic_f int rand(){
+  int tmp;
+
+  $havoc(&tmp);
+  return tmp;
+}
+
+$atomic_f void srand(unsigned int seed){
+}
+
+$atomic_f void srandom(unsigned int seed){
+}
+
+$atomic_f long int random(){
+  long int tmp;
+
+  $havoc(&tmp);
+  return tmp;
+}
+
+$atomic_f void exit(int status){
+  $assert(status == 0, "erroneous exit with code %d", status);
+  $exit();
+}
+
+$atomic_f _Noreturn void abort(void){
+  $exit();
+}
+
+$atomic_f int abs(int x){
+  if(x >= 0)
+    return x;
+  return (-x);
+}
+
+int atoi(const char *nptr){
+  $abstract int _atoi(const char * ptr);
+  
+  return _atoi(nptr);
+}
+
+#ifdef _LINUX
+$atomic_f int rand_r(unsigned int *seedp){
+  int tmp;
+
+  $havoc(&tmp);
+  return tmp;
+}
+#endif
+#endif

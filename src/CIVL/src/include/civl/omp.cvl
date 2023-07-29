@@ -1,0 +1,196 @@
+#include <civlc.cvh>
+#include <civl-omp.cvh>
+#include <stdbool.h>
+#include <mem.cvh>
+#include <omp.h>
+
+#define OMP_LOCK_UNINITIALIZED -2
+#define OMP_LOCK_UNLOCKED -1
+
+// implementations of functions in omp.h go here...
+
+struct omp_lock_t {
+  int state; // owner thread id
+};
+
+struct omp_nest_lock_t {
+  int state; // owner thread id
+  int count; // lock counter
+};
+
+/************************** OMP LIB Implementations *******************************/
+
+/**** **** **** **** OMP SIMPLE LOCK **** **** **** ****/
+
+/* void omp_init_lock (omp_lock_t *); */
+void omp_init_lock(omp_lock_t *lock){  
+  lock->state = OMP_LOCK_UNLOCKED;
+}
+
+/* void omp_destroy_lock (omp_lock_t *); */
+void omp_destroy_lock(omp_lock_t *lock){
+  $assert(lock->state == OMP_LOCK_UNLOCKED, 
+    "Destroy a simple lock not in 'unlocked' state.");
+    
+  lock->state = OMP_LOCK_UNINITIALIZED;
+}
+
+/* void omp_set_lock (omp_lock_t *); */
+void $omp_set_lock(omp_lock_t *lock, int tid) {
+  $atomic {
+    $assert(lock->state != OMP_LOCK_UNINITIALIZED, 
+      "Set a simple lock in 'uninitialized' state.");
+    $when(lock->state == OMP_LOCK_UNLOCKED) {
+      $read_set_push();
+      $write_set_push();
+      lock->state = tid;
+      $read_set_pop();
+      $write_set_pop();
+    }
+  }
+}
+
+/* void omp_unset_lock (omp_lock_t *); */
+void $omp_unset_lock(omp_lock_t *lock, int tid) {
+  $atomic {
+    $assert(lock->state == tid, 
+      "Unset a simple lock not owned: caller_tid: %d, owner_tid: %d.", 
+      tid, lock->state);
+    $assert(lock->state > OMP_LOCK_UNLOCKED, 
+      "Unset a simple lock not in 'locked' state.");
+    $read_set_push();
+    $write_set_push();
+    lock->state = OMP_LOCK_UNLOCKED;
+    $read_set_pop();
+    $write_set_pop();
+  }
+}
+
+/* int omp_test_lock (omp_lock_t *); */
+int $omp_test_lock(omp_lock_t *lock, int tid) {
+  int rtn = 0;
+  $atomic {
+    $assert(lock->state != OMP_LOCK_UNINITIALIZED, 
+      "Set a simple lock in 'uninitialized' state.");
+    $assert(lock->state != tid, 
+      "Test a simple lock owned by the caller: tid: %d.", tid);
+    if (lock->state == OMP_LOCK_UNLOCKED) {
+      $read_set_push();
+      $write_set_push();
+      lock->state = tid;
+      $read_set_pop();
+      $write_set_pop();
+      rtn = 1;
+    }
+  }
+  return rtn;
+}
+
+/**** **** **** **** OMP NESTED LOCK **** **** **** ****/
+
+
+/* void omp_init_nest_lock (omp_nest_lock_t *); */
+void omp_init_nest_lock(omp_nest_lock_t *lock){
+  $assert(lock->state == OMP_LOCK_UNINITIALIZED, 
+    "Init a simple lock not in 'uninitialized' state.");
+  
+  lock->state = OMP_LOCK_UNLOCKED;
+  lock->count = 0;
+}
+
+/* void omp_destroy_nest_lock (omp_nest_lock_t *); */
+void omp_destroy_nest_lock(omp_nest_lock_t *lock){
+  $assert(lock->state == OMP_LOCK_UNLOCKED, 
+    "Destroy a simple lock not in 'unlocked' state.");
+    
+  lock->state = OMP_LOCK_UNINITIALIZED;
+  lock->count = 0;
+}
+
+/* void omp_set_nest_lock (omp_nest_lock_t *); */
+void $omp_set_nest_lock(omp_nest_lock_t *lock, int tid) {
+  $atomic {
+    $assert(lock->state != OMP_LOCK_UNINITIALIZED, 
+      "Set a simple lock in 'uninitialized' state.");
+    $when( lock->state == OMP_LOCK_UNLOCKED 
+        || lock->state == tid) {
+      $read_set_push();
+      $write_set_push();
+      lock->state = tid;
+      lock->count = lock->count + 1;
+      $read_set_pop();
+      $write_set_pop();
+    }
+  }
+}
+
+/* void omp_unset_nest_lock (omp_nest_lock_t *); */
+void $omp_unset_nest_lock(omp_nest_lock_t *lock, int tid) {
+  $atomic {
+    $assert(lock->state == tid, 
+      "Unset a simple lock not owned: caller_tid: %d, owner_tid: %d.", 
+      tid, lock->state);
+    $assert(lock->state > OMP_LOCK_UNLOCKED, 
+      "Unset a simple lock not in 'locked' state.");
+    $read_set_push();
+    $write_set_push();
+    lock->count = lock->count - 1;
+    if (lock->count == 0)
+      lock->state = OMP_LOCK_UNLOCKED;
+    $read_set_pop();
+    $write_set_pop();
+  }
+}
+
+/* int omp_test_nest_lock (omp_nest_lock_t *); */
+int $omp_test_nest_lock(omp_nest_lock_t *lock, int tid) {
+  $atomic {
+    $assert(lock->state != OMP_LOCK_UNINITIALIZED, 
+      "Set a simple lock in 'uninitialized' state.");
+    $assert(lock->state != tid, 
+      "Test a simple lock owned by the caller: tid: %d.", tid);
+    if ( lock->state == OMP_LOCK_UNLOCKED
+      || lock->state == tid) {
+      $read_set_push();
+      $write_set_push();
+      lock->state = tid;
+      lock->count = lock->count + 1;
+      $read_set_pop();
+      $write_set_pop();
+    }
+  }
+  return lock->count;
+}
+
+$abstract double OMP_time(int time_count);
+
+/* double omp_get_wtime (void); */
+double omp_get_wtime() {
+  int OMP_time_count = $next_time_count();
+  double result = OMP_time(OMP_time_count);
+  
+  if (OMP_time_count > 0) {
+    $assume(result > OMP_time(OMP_time_count-1));
+  } else {
+    $assume(result > 0);
+  }
+  return result;
+}
+
+/* OpenMP Library Routines that transformed by CIVL:
+ *   void omp_set_num_threads (int);
+ *   int  omp_get_num_threads (void);
+ *   int  omp_get_max_threads (void);
+ *   int  omp_get_thread_num (void);
+ *   int  omp_get_num_procs (void);
+ */
+
+
+/* Unsupported Functions: 
+ *   int    omp_in_parallel (void);
+ *   void   omp_set_dynamic (int);
+ *   int    omp_get_dynamic (void);
+ *   void   omp_set_nested  (int);
+ *   int    omp_get_nested  (void);
+ *   double omp_get_wtick   (void);
+*/

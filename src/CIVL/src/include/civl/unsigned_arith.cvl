@@ -1,0 +1,100 @@
+#ifndef _UNSIGNED_ARITH
+#define _UNSIGNED_ARITH
+
+$system int $remainder(int x, int y);
+
+/* This file defines certain arithmetic functions on unsigned integers
+ * in terms of ordinary integer arithmetic operations.
+ * Each function consumes the integer arguments for the operation, and
+ * an additional parameter named bound.    The bound should be one
+ * greater than the maximum unsigned value of the particular type.
+ * Hence these functions can be used for all unsigned integer types
+ * by invoking with the appropriate bound: unsigned char, unsigned
+ * short, unsigned int, unsigned long, unsigned long long.
+ *
+ * There is no need for division or modulus operations, since the
+ * usual integer operations can be used for these.  (As they
+ * cannot overflow or underflow.)
+ *
+ * For an expression x, the expression x++ can be translated as
+ * (x<bound-1 ? x++ : ((x=0), bound-1)).
+ *
+ * The expression ++x can be translated as
+ * (x<bound-1 ? ++x : (x=0))
+ * or
+ * (x=(x<bound-1 ? x+1 : 0)). 
+ *
+ * x--:
+ * (x<1-bound ? ((x=0), -bound) : x--)
+ *
+ * --x:
+ * (x<1-bound ? (x=0) : --x)
+ */
+
+/* Computes sum of two unsigned values.
+ * Preconditions: 0<bound and 0<=x,y<bound.
+ * Postconditions: 0<=result<bound and result=x+y mod bound.
+ */
+int $unsigned_add(int x, int y, int bound) {
+  if (x+y < bound)
+    return x+y;
+  else
+    return x+y-bound;
+}
+
+/* Computes difference of two unsigned values.
+ * Preconditions: 0<bound and 0<=x,y<bound.
+ * Postconditions: 0<=result<bound and result=x-y mod bound.
+ */
+int $unsigned_subtract(int x, int y, int bound) {
+  if (x>=y)
+    return x-y;
+  else
+    return x-y+bound;
+}
+
+/* Computes product of two unsigned values.
+ * Preconditions: 0<bound and 0<=x,y<bound.
+ * Postconditions: 0<=result<bound and result=x*y mod bound.
+ */
+int $unsigned_multiply(int x, int y, int bound) {
+  if (x*y < bound)
+    return x*y;
+  else
+    return $remainder((x*y),bound);
+}
+
+/* Converts a signed integer to an unsigned integer.
+ * According to the C Standard, the result is obtained by repeatedly
+ * adding bound to x until the result is nonnegative.
+ *
+ * Preconditions: 0<bound and 0<=x<bound.
+ * Postconditions: 0<=result<bound and result=x mod bound.
+ */
+int $signed_to_unsigned(int x, int bound) {
+  if (x >= 0) {
+    if (x < bound)
+      return x;
+    else
+      return $remainder(x,bound);
+  } else {
+    if (-x <= bound)
+      return bound + x;
+    else
+      return bound - $remainder(-x,bound);
+  }
+}
+
+
+/* Computes -x for an unsigned integer x.
+ * Preconditions: 0<bound and 0<=x<bound
+ * Postconditions: 0<=result<bound and result=-x mod bound.
+ */
+int $unsigned_neg(int x, int bound) {
+  if (x==0)
+    return 0;
+  else
+    return bound - x;
+}
+
+#endif

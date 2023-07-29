@@ -1,0 +1,40 @@
+#ifndef _INT_DIV_CIVL_
+#define _INT_DIV_CIVL_
+
+$system[civlc] void $assert(_Bool expr, ...);
+$system int $remainder(int x, int y);
+$system int $quotient(int x, int y);
+
+int $int_div(int numerator, int denominator) {
+  if (numerator == 0)
+    return 0;
+  if (numerator >= 0) {
+    if (denominator >= 0)
+      return $quotient(numerator, denominator);
+    else
+      return -$quotient(numerator, -denominator);
+  } else {
+    if (denominator >= 0)
+      return -$quotient(-numerator, denominator);
+    else
+      return $quotient(-numerator, -denominator);
+  }
+}
+
+int $int_mod(int numerator, int denominator) {
+  if (numerator == 0)
+    return 0;
+  if (numerator >= 0) {
+    if (denominator >= 0)
+      return $remainder(numerator, denominator);
+    else
+      return $remainder(numerator, -denominator);
+  } else {
+    if (denominator >= 0)
+      return -$remainder(-numerator, denominator);
+    else
+      return -$remainder(-numerator, -denominator);
+  }
+}
+
+#endif

@@ -1,0 +1,287 @@
+#ifndef _CIVLMPI_
+#define _CIVLMPI_
+
+#include <civlc.cvh>
+#include <comm.cvh>
+#include <concurrency.cvh>
+#include <bundle.cvh>
+#include <collate.cvh>
+#include <stddef.h>
+
+#pragma CIVL ACSL 
+
+#define BCAST_TAG        9999
+#define REDUCE_TAG       9998
+#define ALLREDUCE_TAG    9997
+#define GATHER_TAG       9996
+#define SCATTER_TAG      9995
+#define GATHERV_TAG      9994
+#define SCATTERV_TAG     9993
+#define ALLGATHER_TAG    9992
+#define RED_SCATTER_TAG  9991
+#define ALLTOALL_TAG     9990
+#define ALLTOALLV_TAG    9989
+#define ALLTOALLW_TAG    9988
+#define BARRIER_TAG      9987
+#define COMMDUP_TAG      9986
+#define COMMFREE_TAG     9985
+#define SCAN_TAG         9984
+#define EXSCAN_TAG       9983
+
+/* Definition of CIVL-MPI */
+typedef enum _mpi_state{
+  _MPI_UNINIT,
+  _MPI_INIT,
+  _MPI_FINALIZED
+}$mpi_state;
+
+#ifdef _MPI_CONTRACT
+
+typedef int   _MPI_INT_t;
+typedef int   _MPI_2INT_t[2];
+typedef double _MPI_DOUBLE_t;
+typedef float _MPI_FLOAT_t;
+
+typedef enum MPI_COMM_MODE {
+  P2P, COL
+} MPI_COMM_MODE;
+
+#endif
+
+/**************************** Redundent Definitions *******************************/
+/* The independence between civlmpi.cvh and mpi.h causes redundent definition */
+typedef struct MPI_Comm MPI_Comm;
+#ifdef __MPI__
+#else
+typedef struct MPI_Status MPI_Status;
+#endif
+
+#ifdef __MPI_DATATYPE__
+#else
+#define __MPI_DATATYPE__
+typedef enum {
+    MPI_CHAR,
+    MPI_CHARACTER,
+    MPI_SIGNED_CHAR,           
+    MPI_UNSIGNED_CHAR,
+    MPI_BYTE,           
+    MPI_WCHAR,          
+    MPI_SHORT,          
+    MPI_UNSIGNED_SHORT,
+    MPI_INT,            
+    MPI_INT16_T,
+    MPI_INT32_T,
+    MPI_INT64_T,
+    MPI_INT8_T,
+    MPI_INTEGER,
+    MPI_INTEGER1,
+    MPI_INTEGER16,
+    MPI_INTEGER2,
+    MPI_INTEGER4,
+    MPI_INTEGER8,
+    MPI_UNSIGNED,       
+    MPI_LONG,          
+    MPI_UNSIGNED_LONG, 
+    MPI_FLOAT,          
+    MPI_DOUBLE,         
+    MPI_LONG_DOUBLE,
+    MPI_LONG_LONG_INT,  
+    MPI_UNSIGNED_LONG_LONG,
+    MPI_LONG_LONG,
+    MPI_PACKED,
+    MPI_LB,
+    MPI_UB,
+    MPI_UINT16_T,
+    MPI_UINT32_T,
+    MPI_UINT64_T,
+    MPI_UINT8_T,
+    MPI_FLOAT_INT,        
+    MPI_DOUBLE_INT,       
+    MPI_LONG_INT,         
+    MPI_SHORT_INT,        
+    MPI_2INT,             
+    MPI_LONG_DOUBLE_INT,  
+    MPI_AINT,
+    MPI_OFFSET,
+    MPI_2DOUBLE_PRECISION,
+    MPI_2INTEGER,
+    MPI_2REAL,
+    MPI_C_BOOL,
+    MPI_C_COMPLEX,
+    MPI_C_DOUBLE_COMPLEX,
+    MPI_C_FLOAT_COMPLEX,
+    MPI_C_LONG_DOUBLE_COMPLEX,
+    MPI_COMPLEX,
+    MPI_COMPLEX16,
+    MPI_COMPLEX32,
+    MPI_COMPLEX4,
+    MPI_COMPLEX8,
+    MPI_REAL,
+    MPI_REAL16,
+    MPI_REAL2,
+    MPI_REAL4,
+    MPI_REAL8
+} MPI_Datatype;
+#endif
+
+/* Definition of CMPI_Gcomm and MPI_Comm */
+typedef struct $mpi_gcomm $mpi_gcomm; 
+
+/****************************** Helper Functions **********************************/
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$state_f $atomic_f $pure int sizeofDatatype(MPI_Datatype);
+
+/************************** MPI LIB Implementations *******************************/
+$abstract double $mpi_time(int i);
+
+$mpi_gcomm $mpi_gcomm_create($scope, int);
+
+void $mpi_gcomm_destroy($mpi_gcomm);
+
+MPI_Comm $mpi_comm_create($scope, $mpi_gcomm, int);
+
+void $mpi_comm_destroy(MPI_Comm, $mpi_state);
+
+int $mpi_send(const void *, int, MPI_Datatype, int, int, MPI_Comm);
+
+int $mpi_recv(void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *);
+
+int $mpi_sendrecv(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+		  int dest, int sendtag, void *recvbuf, int recvcount, 
+		  MPI_Datatype recvtype, int source, int recvtag,
+		  MPI_Comm comm, MPI_Status *status);
+
+int $mpi_collective_send(const void *, int, MPI_Datatype, int, int, MPI_Comm);
+
+int $mpi_collective_recv(void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *, 
+			 char *);
+
+int $mpi_bcast(void *, int, MPI_Datatype, int, int, MPI_Comm, char *);
+
+int $mpi_reduce(const void*, void*, int,
+		MPI_Datatype, MPI_Op, int, int,
+		MPI_Comm, char *);
+
+int $mpi_gather(const void*, int, MPI_Datatype, 
+	       void*, int, MPI_Datatype, int, int, MPI_Comm, char *);
+
+int $mpi_gatherv(const void*, int, MPI_Datatype,
+		void*, const int[], const int[],
+		 MPI_Datatype, int, int, 
+		 MPI_Comm, char *);
+
+int $mpi_scatter(const void*, int, MPI_Datatype, 
+		 void*, int, MPI_Datatype, int,
+		 int, MPI_Comm, char *);
+
+int $mpi_scatterv(const void*, const int[], const
+		 int[], MPI_Datatype, void* ,
+		 int, MPI_Datatype, int, int,
+		  MPI_Comm, char *);
+
+int $mpi_scan(const void *, void *, int, MPI_Datatype, MPI_Op, MPI_Comm);
+
+int $mpi_exscan(const void *, void *, int, MPI_Datatype, MPI_Op, MPI_Comm);
+
+void* $mpi_pointer_add(const void*, int, MPI_Datatype);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$pure $system void* $mpi_pointer_add_sys(const void*, int, size_t);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system[mpi] int $mpi_new_gcomm($scope, $mpi_gcomm);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system[mpi] $mpi_gcomm $mpi_get_gcomm($scope, int);
+
+int $mpi_comm_dup($scope, MPI_Comm, MPI_Comm *, char *);
+
+int $mpi_comm_free(MPI_Comm *, $mpi_state);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system[mpi] $scope $mpi_root_scope($comm);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system[mpi] $scope $mpi_proc_scope($comm);
+
+/* Assert that the basetype of the object pointed by 'buf' is sames as
+   the basetype of the 'datatype'. Here a basetype of an MPI_Datatype
+   means a indivisiable MPI_datatype, e.g. the basetype of MPI_2INT is
+   MPI_INT.*/
+/*@ depends_on \access(buf);
+  @ executes_when \true;
+  @*/
+$system[mpi] void $mpi_check_buffer(const void * buf, int count, MPI_Datatype datatype);
+
+/* Create a $bundle type object which contains a sequence of entries
+   that identify a group of consistent MPI collective routines. MPI
+   collective routines should be reached by every process in the same
+   communicator with the same order 
+   Arguments:
+   comm: the MPI communicator all the processes are belong to.
+   routineTag: the tag indicating a collective routine.
+   root: rank of the root process
+   op: a int type object representing the enumerator of the MPI_Op, 
+       if MPI_Op is not part of the arguments of the collective routine, 
+       this argument should be set 0.
+   numDatatypes: the number of datatypes involved in the messages.
+   datatypes: the datatype array stores datatypes enumerators involved in 
+              the message.
+*/
+$bundle $mpi_create_coroutine_entry(int routineTag, int root, 
+				    int op, int numDatatypes, int * datatypes);
+
+/* Compare two collective routine entries, report errors if there is
+*  unmatched informations in these entries. */
+void $mpi_diff_coroutine_entries($bundle specEntry, $bundle mineEntry, int rank);
+
+/* Allocate memory space with MPI type signitures. Returns a pointer
+   to the allocated memory space */
+void * $mpi_malloc(int count, MPI_Datatype datatype);
+
+/* Checking a boolean expression in a collective way. Participating
+   processes are defined by the first argument. */
+void $mpi_coassert(MPI_Comm, _Bool);
+
+/*********** Section: contract helper functions ***********/
+#ifdef _MPI_CONTRACT
+/*@ executes_when \true;
+  @ depends_on \nothing;
+  */
+$atomic_f $collate_state $mpi_snapshot(MPI_Comm comm, $scope scope);
+
+/*@ executes_when \true;
+  @ depends_on \nothing;
+  */
+$atomic_f void $mpi_unsnapshot(MPI_Comm comm, $collate_state cs);
+
+/* Returns the number of chars of the given MPI_Datatype.
+ * equivalent to returns (datatypeSizeof(datatype) / sizeof(char))
+ */
+$state_f size_t $mpi_extentof(MPI_Datatype);
+
+/* Assigns fresh new symbolic constants to the given mpi region */
+void $mpi_assigns(void * buf, int count, MPI_Datatype datatype);
+
+$atomic_f void $mpi_comm_empty(MPI_Comm comm);
+
+$abstract int $mpi_nonoverlapping(MPI_Datatype);
+
+$abstract int $mpi_sig(MPI_Datatype);
+#endif
+#endif
+
+
+

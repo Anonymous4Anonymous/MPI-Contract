@@ -1,0 +1,263 @@
+/* This header file contains the core definitions of the CIVL-C language,
+ * including standard types and function prototypes.
+ */
+
+#ifndef _CIVLC_
+#define _CIVLC_
+
+#pragma CIVL ACSL 
+/* *********************  Standard Constants and Types ********************* */
+#define $true 1
+
+#define $false 0
+
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
+#ifndef __UNSIGNED_BOUND
+#define __UNSIGNED_BOUND 32
+#endif
+
+#define $elaborate(x)  for(int _i = 0; _i < (x); _i++)
+
+typedef unsigned long int size_t;
+
+/* **************************  Basic CIVL-C Types ************************** */ 
+/* The CIVL-C process reference type */ 
+typedef struct $proc $proc;
+
+/* The CIVL-C scope type, used to represent a scope */
+typedef struct $scope $scope;
+
+/* The CIVL-C program state refrence type */
+typedef struct $state $state;
+
+/* The CIVL-C dynamic type, used to represent a symbolic type */
+typedef struct $dynamic $dynamic;
+
+/* **************************** Misc. Functions **************************** */
+
+/* Wait for another process p to terminate. */
+$system void $wait($proc p);
+
+/* Blocks until all processes referred to by the given 
+   array terminates. */
+$system void $waitall($proc *procs, int numProcs);
+
+/* Terminate the calling process. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system void $exit(void);
+
+/* Checks if the given process has terminated.
+ * 
+ * TODO: the contract should be 
+ *       depends_on \proc(p);
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system _Bool $is_terminated($proc p);
+
+/* Nondeterministic choice of integer i, such that 0<=i<n. */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system int $choose_int(int n);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system void $assert(_Bool expr, ...);
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system void $assume(_Bool expr);
+
+/* get a unique non-negative integer number for time count */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system int $next_time_count(void);
+
+/* print the path condition of the current state */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system $pure void $pathCondition(void);
+
+/* is the given value concrete? */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system $pure _Bool $is_concrete_int(int value);
+/* **************************** Memory Functions *************************** */
+
+/* The CIVL-C malloc function, which takes a reference to a scope */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system void* $malloc($scope s, int size);
+
+/* The CIVL-C de-allocation function, which takes a pointer, just like 
+ * the standard "free" */
+/*@ depends_on \access(p);
+  @ executes_when \true;
+  @*/
+$system void $free(void *p);
+
+/******/
+
+/* Assigns arbitrary value to the memory location specified by the given pointer.
+ */
+/*@ depends_on \access(ptr);
+  @ executes_when \true;
+  @*/
+$system void $havoc(void *ptr);
+
+/* Assigns default value to the object referred by the given pointer
+ * "ptr" as if the object has static storage.  The definition of
+ * default values of objects having static storage conforms C11
+ * standard.
+ * 
+ * The object pointed by "ptr" must have some type.
+ */
+/*@ depends_on \access(ptr);
+  @ executes_when \true;
+  @*/
+$system void $default_value(void *ptr);
+
+/* Returns the value of real number power operation with the given base and exponent.
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system $pure double $pow(double base, double exp);
+
+/** returns true iff the given pointer is a dereferable pointer */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system $state_f _Bool $is_derefable(void*ptr);
+
+/* Returns the reference to a snapshot of the current process from the
+   current state  */
+/*@ depends_on \nothing; */
+/*@ executes_when \true; */
+$system $state_f $state $get_state();
+
+/* Returns the reference to the current state  */
+/*@ depends_on \nothing; */
+/*@ executes_when \true; */
+$system $state $get_full_state();
+
+// the types will be updated to $integer later
+$system int $remainder(int x, int y);
+
+$system int $quotient(int x, int y);
+
+/* Push an assumption into the partial path condition stack belong to
+   the calling process. */
+/*@ depends_on \nothing; */
+/*@ executes_when \true; */
+$system void $assume_push(_Bool pred);
+
+/* Pop an entry out of a partial path condition stack belong to the
+   calling process. */
+/*@ depends_on \nothing; */
+/*@ executes_when \true; */
+$system void $assume_pop();
+
+/** The system function informs the verifier that the process is
+    entering an local block.  To the verifier, everything in a local
+    block is purely local, i.e., nothing can affect any other process.
+ */
+/*@ depends_on \nothing; */
+/*@ executes_when \true; */
+$system void $local_start();
+
+/** The system function informs the verifier that the process is
+    leaving an local block.
+ */
+$system void $local_end();
+
+/*********************************************************************
+ * As long as a process has a non-empty write set stack, any
+ * modification on variables and memroy heap objects will be recorded
+ * in the write set.
+ *********************************************************************/
+
+/* This is a system function which has the same specification as $when
+   but more strict requirements: The given condition can ONLY change
+   from false to true (or stay true) in any execution of a program,
+   otherwise CIVL will not guarantee the soundness for deadlock-free
+   property.
+ */
+/*@ depends_on \nothing;
+  @*/
+$system void $unidirectional_when(_Bool condition);
+
+/*@ depends_on \access(value);
+  @ executes_when \true;
+  @*/
+$atomic_f void $output_assign(void * output,const void * value, int size);
+
+/* returns the size (in bytes) of the heap of the given scope */
+$system $atomic_f size_t $heap_size($scope scope);
+
+/** The base address q of a pointer p is: 
+ *    
+ * 1. q := p, if p points anything other than an array element.
+ *
+ * 2. q := a pointer to the first element of the array referred by p,
+ * if p points an array element.
+ *
+ * Note that an "array" here means the physical array which is always
+ * one-dimensional. And a sequence of memory spaces allocated by
+ * malloc will be seen as an array.
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$system $state_f void * $array_base_address_of(const void *ptr);
+
+
+/** This system function itself is a no-op.  However, when a process
+    is at a call to this function, other processes are allowed to
+    interrupt this process.  This behavior is in the contrary to an
+    atomic execution that a process cannot be interrupted by other
+    processes.  NOTE that allowing other processes to interrupt the
+    current process does not necessarily mean that the interruption
+    will happen.  Whether an interruption actually happens (i.e.,
+    transitions of more processes than the current one are enabled at
+    the current state) depends on the POR algorithm.
+ */
+/*@ depends_on \nothing;
+  @*/
+$system void $yield();
+
+
+/* Obtains scope values of the scopes in the given state that is
+ * reachable by the process of the given place, where 'place' is the
+ * PID of the process in the state, it is a value that is senseless
+ * when used for any other states. The scope values are assigned to
+ * the given scope array. The array must be big enough for containing
+ * all scope values in the give state.
+ *
+ * state:  a $state object
+ * scopes: a pointer to an array which is big enough for the
+ * scope values in the given state
+ */
+//$system void $get_reachable_scopes($state state, int place, $scope (*scopes)[]);
+
+/* returns the number of scopes in the given state */
+//$system int $get_num_scopes($state state);
+
+#endif
+
+
+
+

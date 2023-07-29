@@ -1,0 +1,166 @@
+#ifndef __CIVL_SVCOMP__
+#define __CIVL_SVCOMP__
+#include <civlc.cvh>
+#include <stdlib.h>
+#ifndef SVCOM_INT_UPPER
+#define SVCOM_INT_UPPER 5
+#endif
+
+#ifndef SVCOM_INT_LOWER
+#define SVCOM_INT_LOWER -5
+#endif
+
+
+#ifndef SVCOM_UINT_UPPER
+#define SVCOM_UINT_UPPER 4
+#endif
+
+#ifndef SVCOM_LONG_UPPER
+#define SVCOM_LONG_UPPER 5
+#endif
+
+#ifndef SVCOM_ULONG_UPPER
+#define SVCOM_ULONG_UPPER 4
+#endif
+
+int _bool_count=0;
+int _pointer_count=0;
+
+void* __VERIFIER_nondet_pointer(){
+  void* x;
+
+  $havoc(&x);
+  return x;
+}
+
+long __VERIFIER_nondet_long(){
+  long temp;
+
+  $havoc(&temp);
+  $assume(temp<=SVCOM_LONG_UPPER);
+  return temp;
+}
+
+unsigned long __VERIFIER_nondet_ulong(){
+  unsigned long temp;
+
+  $havoc(&temp);
+  $assume(temp>=0 && temp<=SVCOM_ULONG_UPPER);
+  return temp;
+}
+
+int __VERIFIER_nondet_int(){
+  int temp;
+
+  $havoc(&temp);
+  $assume(temp<=SVCOM_INT_UPPER && temp>=SVCOM_INT_LOWER);
+  return temp;
+}
+
+char __VERIFIER_nondet_char(){
+  char temp;
+  
+  $havoc(&temp);
+  return temp;
+}
+
+double __VERIFIER_nondet_double(){
+  double temp;
+  
+  $havoc(&temp);
+  return temp;
+}
+
+float __VERIFIER_nondet_float(){
+  float temp;
+  
+  $havoc(&temp);
+  return temp;
+}
+
+unsigned int __VERIFIER_nondet_uint(){
+  int temp;
+
+  $havoc(&temp);
+  $assume(temp>=0 && temp<=SVCOM_UINT_UPPER);
+  return temp;
+}
+
+_Bool __VERIFIER_nondet_bool(){
+  int x;
+
+  $havoc(&x);
+  return x != 0;
+}
+
+void __VERIFIER_error(){
+  $assert($false, "__VERIFIER_error() is called.\n");
+}
+
+void __VERIFIER_assume(int expression) {
+  //$elaborate(expression);
+  if (!expression) 
+  { 
+    LOOP: 
+      goto LOOP; 
+      }
+}
+
+void __VERIFIER_atomic_end(){
+  return;
+}
+
+/*
+int _nondet_int(){
+  int result;
+
+  $havoc(&result);
+  return result;
+}
+
+int access_ok(int type, const void *addr, unsigned long size){
+  return _nondet_int();
+}
+
+int alloc_chrdev_region(unsigned int * a, unsigned b, unsigned c, const char * d) {
+  return _nondet_int();
+}
+
+int printk(const char * fmt, ...){
+  return 0;
+}
+
+int register_chrdev_region(unsigned int, unsigned, const char *) {
+  return _nondet_int();
+}
+
+void unregister_chrdev_region(unsigned int, unsigned) {
+  return;
+}
+
+loff_t no_llseek(struct file *file, loff_t offset, int origin) {
+  return _nondet_int();
+}
+
+int nonseekable_open(struct inode * inode, struct file * filp) {
+  return _nondet_int();
+}
+
+struct resource {
+  unsigned long start, end;
+  const char *name;
+  unsigned long flags;
+};
+
+typedef struct resource resource_type;
+
+void __release_region(struct resource * a, resource_size_t b, resource_size_t c) {
+  return;
+}
+
+int __get_user(int size, const void *ptr){
+    return _nondet_int();
+}
+*/
+#endif
+

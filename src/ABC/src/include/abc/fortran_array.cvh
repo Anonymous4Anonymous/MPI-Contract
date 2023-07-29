@@ -1,0 +1,89 @@
+/* This header file contains the function prototypes for 
+ * transforming Fortran arrays.
+ */
+
+#ifndef __FORTRANARRAY_H__
+#define __FORTRANARRAY_H__
+
+#include <stdlib.h>
+#include <stdio.h>
+
+/* 3 for left-bound, right-bound, and stride. */
+#define SIZE_IDX_INFO 3
+
+/* ********************************* Types ********************************* */
+
+/* The kind of a Fortran array descriptor. */
+
+/* The memory space storing all data objects and only 
+ * referenced by a SOURCE fortran array descriptor
+ */
+typedef struct FORTRAN_ARRAY_MEMORY *farr_mem;
+
+/* A Fortran array descriptor indicating a Fortran array, 
+ * which is any of three kinds mentioned above.
+ */
+typedef struct FORTRAN_ARRAY_DESCRIPTOR *farr_desc;
+
+
+/* **************************** Misc. Functions **************************** */
+/* Creates a Fortran array descriptor
+ * for a variable declaration with an array type.
+ */
+farr_desc farr_create(
+  size_t type,           // The type of array element
+  int rank,              // The rank/dimensions
+  int rank_info[SIZE_IDX_INFO][rank] 
+                         // All indexing info for each dim.
+);
+
+/* Creates a Fortran array descriptor
+ * for an array sectioned from an base array.
+ */
+farr_desc farr_section(
+  farr_desc arr,         // The descriptor of the base array.
+  int sect_info[SIZE_IDX_INFO][]
+                         // All indexing info for each dim.
+);
+
+farr_desc farr_section_full (
+  farr_desc arr         // The descriptor of the base array.
+);
+
+/* Creates a Fortran array descriptor
+ * for an array reshaped from an base array.
+ */
+farr_desc farr_reshape(
+  farr_desc arr,         // The descriptor of the base array.
+  int rank,              // The new rank for reshaping.
+  int rshp_info[SIZE_IDX_INFO][rank]
+                         // All indexing info for each dim.
+);
+
+/* Destroys a Fortran array descriptor
+ * Note that this function only free the outer-most
+ * descriptor if the given descriptor kind is NOT 'SOURCE'.
+ */
+void farr_destroy(
+  farr_desc arr          // The outer-most descriptor is freed
+);
+
+/* Operations */
+
+/* Gets the pointer to a Fortran array data object 
+ * from the given array and the related indices.
+ */
+void *farr_subscript(
+  farr_desc arr,         // The array descriptor
+  int indices[],         // Indices for each rank/dim.
+  int isDirect
+);
+
+void *farr_c_array(
+  size_t type,           // The type of array element
+  int rank,              // The rank/dimensions
+  int rank_info[SIZE_IDX_INFO][rank] 
+                         // All indexing info for each dim.
+);
+
+#endif

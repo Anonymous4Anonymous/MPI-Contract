@@ -1,0 +1,30 @@
+Optimization: delete unnecessary declarations.
+This is done after linking, but should be safe whole-program transformation
+any time.
+Pruner could also do it.
+
+concerns file-scope (external defns) only.
+
+for any X:
+there will be at most 1 definition of X, and any number of decls of X that are not defns
+
+decl(X)*
+def(X)?
+decl(X)*
+
+the transformation will yield:
+
+decl(X)?
+def(X)?
+
+assuming all the decls are equivalent.
+
+How do you tell if decls are equivlent? AST node compare?
+
+Simple transformation:
+
+If D is the same as any previous decl of X, it can be removed.
+in general this will happen with the first decl. so dont worry
+about quadratic complexity
+
+or: iterate over external defn nodes (child of Program)

@@ -1,0 +1,38 @@
+#ifndef _INT_DIV_CIVL_
+#define _INT_DIV_CIVL_
+
+$system[civlc] void $assume(_Bool expr);
+
+int $int_div(int numerator, int denominator) {
+  if (numerator == 0)
+    return 0;
+  if (numerator >= 0) {
+    if (denominator >= 0)
+      return numerator/denominator;
+    else
+      return -(numerator/(-denominator));
+  } else {
+    if (denominator >= 0)
+      return -((-numerator)/denominator);
+    else
+      return (-numerator)/(-denominator);
+  }
+}
+
+int $int_mod(int numerator, int denominator) {
+  if (numerator == 0)
+    return 0;
+  if (numerator >= 0) {
+    if (denominator >= 0)
+      return numerator%denominator;
+    else
+      return numerator%(-denominator);
+  } else {
+    if (denominator >= 0)
+      return -((-numerator)%denominator);
+    else
+      return -((-numerator)%(-denominator));
+  }
+}
+
+#endif

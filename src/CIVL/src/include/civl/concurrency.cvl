@@ -1,0 +1,96 @@
+/* This file completes the definitions of types and some functions
+ * for concurrency, which are declared in concurrency.cvh.
+ */
+ 
+#ifndef __CIVLC_CONCURRENCY__
+#define __CIVLC_CONCURRENCY__
+#include<civlc.cvh>
+#include<concurrency.cvh>
+#include<seq.cvh>
+#pragma CIVL ACSL
+/* *********************** Types *********************** */
+
+/* A data type representing a global barrier which must be operated by local
+ * barriers.  Completes the declaration of this type in civlc-common.h.
+ */
+struct _gbarrier {
+  int nprocs;
+  $proc proc_map[]; // initialized as all $proc_null.
+  _Bool in_barrier[]; // initialized as all false.
+  int num_in_barrier; // initialized as 0.
+};
+
+/* A data type representing a global barrier which used for 
+ * operating global barriers. The local barrier type has 
+ * a handle of a global barrier.
+ * Completes the declaration of this type in civlc-common.h.
+ */
+struct _barrier {
+  int place;
+  $gbarrier gbarrier; // initialized as 0.
+};
+
+/* *********************** Functions *********************** */
+
+/*@ depends_on \access(barrier);
+  @ executes_when \true;
+  @ */ 
+$atomic_f void $barrier_enter($barrier barrier){
+  $gbarrier gbarrier=barrier->gbarrier;
+  int myplace=barrier->place;
+  int nprocs;
+
+  $assert(!gbarrier->in_barrier[myplace],
+	  "the barrier of has already been entered with the place %d",
+	  myplace);
+  gbarrier->in_barrier[barrier->place]=$true;
+  nprocs=gbarrier->nprocs;
+  if(++gbarrier->num_in_barrier == nprocs){
+    for(int i=0; i<nprocs; i++)
+      gbarrier->in_barrier[i]=$false;
+    gbarrier->num_in_barrier=0;
+  }
+}
+
+/*@ depends_on \access(barrier);
+  @ */
+$atomic_f void $barrier_exit($barrier barrier){
+  $when(!barrier->gbarrier->in_barrier[barrier->place]);
+}
+
+void $barrier_call($barrier barrier) {
+  $barrier_enter(barrier);
+  $barrier_exit(barrier);
+}
+
+
+$atomic_f $gbarrier $gbarrier_create($scope scope, int size){
+  $gbarrier gbarrier = ($gbarrier)$malloc(scope, sizeof(struct _gbarrier));
+
+  gbarrier->nprocs=size;
+  gbarrier->proc_map=($proc[size])$lambda(int i) $proc_null;
+  gbarrier->in_barrier=(_Bool[size])$lambda(int i) $false;
+  gbarrier->num_in_barrier=0;
+  return gbarrier;
+}
+
+$atomic_f void $gbarrier_destroy($gbarrier gbarrier){
+  $free(gbarrier);
+}
+
+$atomic_f $barrier $barrier_create($scope scope, $gbarrier gbarrier, int place){
+  $assert(gbarrier->proc_map[place]==$proc_null, "the place %d in the global barrier has already been taken.", place);
+
+  $barrier barrier=($barrier)$malloc(scope, sizeof(struct _barrier));
+
+  barrier->place=place;
+  barrier->gbarrier=gbarrier;
+  gbarrier->proc_map[place]=$self;
+  return barrier;
+}
+
+$atomic_f void $barrier_destroy($barrier barrier){
+  $free(barrier);
+}
+
+#endif

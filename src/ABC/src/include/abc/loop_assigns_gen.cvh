@@ -1,0 +1,52 @@
+/* This header file contains the data structure for managing write
+ * sets for loop invariants, as well as the interfaces for the data
+ * structure.
+ *  
+ */
+
+#ifndef _LOOP_ASSIGNS_GEN_
+#define _LOOP_ASSIGNS_GEN_
+
+#include<mem.cvh>
+
+#pragma CIVL ACSL
+
+typedef struct _loop_write_set $loop_write_set;
+
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$state_f $loop_write_set $loop_write_set_new();
+
+/* Description: Updates the argument of $loop_write_set type by doing
+ *              union with a new write set--iter_mem, which is
+ *              collected from the latest iteration. Return true if
+ *              and only if the $loop_write_set has been widening.
+ */
+/*@ depends_on \access(&ws);
+  @ executes_when \true;
+  @*/
+$state_f $loop_write_set $loop_write_set_union($loop_write_set ws, $mem iter_mem);
+
+/* Description: Havoc all the memory location references in the given
+ *              $loop_write_set object.  The evaluation of all the
+ *              referred memory objects is associated to the given
+ *              pre_state.  Returns a boolean value assumption which
+ *              is part of the result of the havoc operation.
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$atomic_f _Bool $loop_write_set_havoc($loop_write_set ws);
+
+/* Description: Attempt to widening all the memory location references in the
+ *              given $loop_write_set object. Returns true if and only
+ *              if the ws has been successfully widening.
+ */
+/*@ depends_on \nothing;
+  @ executes_when \true;
+  @*/
+$state_f $loop_write_set $loop_write_set_widening($loop_write_set ws);
+
+#endif
+
