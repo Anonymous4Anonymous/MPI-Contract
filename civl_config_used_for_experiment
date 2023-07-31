@@ -1,0 +1,36 @@
+/* This is a SARL configuration file.
+ * It contains one entry for each theorem prover SARL may use.
+ * To resolve a query, by default, SARL will use the first prover here.
+ * If that result in inconclusive, it will try the second prover.
+ * And so on, until a conclusive result has been reached, or all provers
+ * have been exhausted.
+ * 
+ * SARL looks for a configuration file by looking in the following
+ * places in order:
+ * 1. .sarl in current working directory
+ * 2. .sarl in user's home directory
+ * 3. .sarl_default in current working directory
+ * 4. .sarl_default in user's home directory
+ */
+
+prover {
+  aliases = z3;
+  kind = Z3;
+  version = "4.8.17 - 64 bit";
+  path = "/opt/homebrew/bin/z3";
+  timeout = 2.0;
+  showQueries = false;
+  showInconclusives = false;
+  showErrors = true;
+}
+
+prover {
+  aliases = cvc4;
+  kind = CVC4;
+  version = "1.8";
+  path = "/opt/local/bin/cvc4";
+  timeout = 2.0;
+  showQueries = false;
+  showInconclusives = false;
+  showErrors = true;
+}
