@@ -28,7 +28,7 @@ This is the Artifact for the ICSE 2024 submission: Collective Contracts for Mess
 - If this artifact repository is not located at
   `/Users/{username}/Documents`, please update the `workspace` path with
   respect to the location of this repository in `build.properties` in
-  `ABC` `CIVL`, `GMC`, and `SARL`, respectively, under `src`.
+  `ABC` and `CIVL` under `src`.
 
 - build the prototype by `make` at the root directory of this repository
 
