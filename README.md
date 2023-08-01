@@ -7,10 +7,10 @@ This is the Artifact for the ICSE 2024 submission: Collective Contracts for Mess
 
 - `src`: the source code of the prototype tool used in the submission
 
-- `examples`: the experiment examples
+- `examples`: examples of the experiment reported in the submission
 
 - `civl_config_used_for_experiment`: the configuration file used in
-  the experiment reported in the submission
+  the experiment
 
     - It specifies the versions, the invocation order, and the timeout
       for the two SMT provers: z3 and cvc4.
@@ -28,7 +28,7 @@ This is the Artifact for the ICSE 2024 submission: Collective Contracts for Mess
 - If this artifact repository is not located at
   `/Users/{username}/Documents`, please update the `workspace` path with
   respect to the location of this repository in `build.properties` in
-  `ABC` `CIVL`, `GMC`, and `SARL`, respectively, under `src`.
+  `ABC` and `CIVL` under `src`.
 
 - build the prototype by `make` at the root directory of this repository
 
