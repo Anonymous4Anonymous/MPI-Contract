@@ -1,5 +1,5 @@
-The CIVL tool is released under GPLv3 license.  The license file can
-be found at `src/LICENSE`.
+The CIVL tool is released under GPLv3 license.  The license files can
+be found at `src/lib/licenses`.
 
 CIVL depends on the following packages:
 
