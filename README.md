@@ -1,14 +1,13 @@
-## This is the Artifact for the ICSE 2024 submission: Collective Contracts for Message-Passing Parallel Programs
+This is the Artifact for the ICSE 2024 submission: Collective Contracts for Message-Passing Parallel Programs
 
 ## Contents
-- the extended technical report, including
+- `tech_report.pdf`: the extended technical report, including
     - a complete proof for the main theorem
     - a list of contracts for all MPI collective functions
 
-- the source code of the prototype tool used in the submission is
-  located at `src`
+- `src`: the source code of the prototype tool used in the submission
 
-- the experiment examples are located at `examples`
+- `examples`: the experiment examples
 
 - `civl_config_used_for_experiment`: the configuration file used in
   the experiment reported in the submission
@@ -27,9 +26,9 @@
 - install SMT provers z3 (https://github.com/Z3Prover/z3) and cvc4 (https://github.com/CVC4)
 
 - If this artifact repository is not located at
-  `/Users/{username}/Documents`, please update the `root` path with
+  `/Users/{username}/Documents`, please update the `workspace` path with
   respect to the location of this repository in `build.properties` in
-  `src/ABC` and `src/CIVL`.
+  `ABC` `CIVL`, `GMC`, and `SARL`, respectively, under `src`.
 
 - build the prototype by `make` at the root directory of this repository
 
