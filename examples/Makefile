@@ -9,62 +9,41 @@ all: mpi_bcast mpi_gather mpi_allgather mpi_reduce mpi_reduce_scatter mpi_reduce
 
 bad: mpi_bcast_bad mpi_gather_bad mpi_allgather_bad mpi_reduce_bad mpi_reduce_scatter_bad mpi_reduce_scatter_nc_bad mpi_allreduce_bad mpi_allreduce_dr_bad mpi_scatter_bad exchange_bad diff1d_bad dotProd_bad oddEven_bad matmat_bad cyc_bad update_bad
 
+config:
+	$(CIVL) config
+
 
 mpi_bcast: MPI_Bcast.c
-#	$(CIVL) $(VERIFY1) -mpiContract=bcast MPI_Bcast.c
-#	$(CIVL) $(VERIFY2) -mpiContract=bcast MPI_Bcast.c
-#	$(CIVL) $(VERIFY3) -mpiContract=bcast MPI_Bcast.c
-#	$(CIVL) $(VERIFY4) -mpiContract=bcast MPI_Bcast.c
 	$(CIVL) $(VERIFY5) -mpiContract=bcast MPI_Bcast.c
 
 mpi_bcast_bad: MPI_Bcast_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=bcast MPI_Bcast_bad.c
 
 mpi_gather: MPI_Gather.c
-#	$(CIVL) $(VERIFY1) -mpiContract=gather MPI_Gather.c
-#	$(CIVL) $(VERIFY2) -mpiContract=gather MPI_Gather.c
-#	$(CIVL) $(VERIFY3) -mpiContract=gather MPI_Gather.c
-#	$(CIVL) $(VERIFY4) -mpiContract=gather MPI_Gather.c
 	$(CIVL) $(VERIFY5) -mpiContract=gather MPI_Gather.c
 
 mpi_gather_bad: MPI_Gather_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=gather MPI_Gather_bad.c
 
 mpi_allgather: MPI_Allgather.c
-#	$(CIVL) $(VERIFY1) -mpiContract=allgather MPI_Allgather.c
-#	$(CIVL) $(VERIFY2) -mpiContract=allgather MPI_Allgather.c
-#	$(CIVL) $(VERIFY3) -mpiContract=allgather MPI_Allgather.c
-#	$(CIVL) $(VERIFY4) -mpiContract=allgather MPI_Allgather.c
 	$(CIVL) $(VERIFY5) -mpiContract=allgather MPI_Allgather.c
 
 mpi_allgather_bad: MPI_Allgather_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=allgather MPI_Allgather_bad.c
 
 mpi_reduce: MPI_Reduce.c
-#	$(CIVL) $(VERIFY1) -mpiContract=reduce MPI_Reduce.c
-#	$(CIVL) $(VERIFY2) -mpiContract=reduce MPI_Reduce.c
-#	$(CIVL) $(VERIFY3) -mpiContract=reduce MPI_Reduce.c
-#	$(CIVL) $(VERIFY4) -mpiContract=reduce MPI_Reduce.c
 	$(CIVL) $(VERIFY5) -mpiContract=reduce MPI_Reduce.c
 
 mpi_reduce_bad: MPI_Reduce_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=reduce MPI_Reduce_bad.c
 
 mpi_reduce_scatter: MPI_Reduce_scatter.c 
-#	$(CIVL) $(VERIFY1) -mpiContract=reduce_scatter MPI_Reduce_scatter.c
-#	$(CIVL) $(VERIFY2) -mpiContract=reduce_scatter MPI_Reduce_scatter.c
-#	$(CIVL) $(VERIFY3) -mpiContract=reduce_scatter MPI_Reduce_scatter.c
-#	$(CIVL) $(VERIFY4) -mpiContract=reduce_scatter MPI_Reduce_scatter.c
 	$(CIVL) $(VERIFY5) -mpiContract=reduce_scatter MPI_Reduce_scatter.c
 
 mpi_reduce_scatter_bad: MPI_Reduce_scatter_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=reduce_scatter MPI_Reduce_scatter_bad.c
 
 mpi_reduce_scatter_nc: MPI_Reduce_scatter_nc.c
-#	$(CIVL) $(VERIFY1) -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c
-#	$(CIVL) $(VERIFY2) -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c
-#	$(CIVL) $(VERIFY3) -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c
-#	$(CIVL) $(VERIFY4) -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c
 	$(CIVL) $(VERIFY5) -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c
 
 mpi_reduce_scatter_nc_bad: MPI_Reduce_scatter_nc_bad.c
@@ -72,40 +51,24 @@ mpi_reduce_scatter_nc_bad: MPI_Reduce_scatter_nc_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=reduce_scatter MPI_Reduce_scatter_nc_init_offsets_bad.c
 
 mpi_allreduce: MPI_Allreduce.c
-#	$(CIVL) $(VERIFY1) -mpiContract=allreduce MPI_Allreduce.c
-#	$(CIVL) $(VERIFY2) -mpiContract=allreduce MPI_Allreduce.c
-#	$(CIVL) $(VERIFY3) -mpiContract=allreduce MPI_Allreduce.c
-#	$(CIVL) $(VERIFY4) -mpiContract=allreduce MPI_Allreduce.c
 	$(CIVL) $(VERIFY5) -mpiContract=allreduce MPI_Allreduce.c
 
 mpi_allreduce_bad: MPI_Allreduce_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=allreduce MPI_Allreduce_bad.c
 
 mpi_allreduce_dr: MPI_Allreduce_double_recursive.c
-#	$(CIVL) $(VERIFY1) -mpiContract=allreduce MPI_Allreduce_double_recursive.c
-#	$(CIVL) $(VERIFY2) -mpiContract=allreduce MPI_Allreduce_double_recursive.c
-#	$(CIVL) $(VERIFY3) -mpiContract=allreduce MPI_Allreduce_double_recursive.c
-#	$(CIVL) $(VERIFY4) -mpiContract=allreduce MPI_Allreduce_double_recursive.c
 	$(CIVL) $(VERIFY5) -mpiContract=allreduce MPI_Allreduce_double_recursive.c
 
 mpi_allreduce_dr_bad: MPI_Allreduce_double_recursive_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=allreduce MPI_Allreduce_double_recursive_bad.c
 
 mpi_scatter: MPI_Scatter.c
-#	$(CIVL) $(VERIFY1) -mpiContract=scatter MPI_Scatter.c
-#	$(CIVL) $(VERIFY2) -mpiContract=scatter MPI_Scatter.c
-#	$(CIVL) $(VERIFY3) -mpiContract=scatter MPI_Scatter.c
-#	$(CIVL) $(VERIFY4) -mpiContract=scatter MPI_Scatter.c
 	$(CIVL) $(VERIFY5) -mpiContract=scatter MPI_Scatter.c
 
 mpi_scatter_bad: MPI_Scatter_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=scatter MPI_Scatter_bad.c
 
 exchange: diffusion1d.c
-#	$(CIVL) $(VERIFY1) -mpiContract=exchange_ghost_cells diffusion1d.c
-#	$(CIVL) $(VERIFY2) -mpiContract=exchange_ghost_cells diffusion1d.c
-#	$(CIVL) $(VERIFY3) -mpiContract=exchange_ghost_cells diffusion1d.c
-#	$(CIVL) $(VERIFY4) -mpiContract=exchange_ghost_cells diffusion1d.c
 	$(CIVL) $(VERIFY5) -mpiContract=exchange_ghost_cells diffusion1d.c
 
 exchange_bad: exchange_bad.c
@@ -118,40 +81,24 @@ update_bad: update_bad.c
 	$(CIVL) $(VERIFY1) -mpiContract=update -loop update_bad.c
 
 diff1d: diffusion1d.c
-#	$(CIVL) $(VERIFY1) -mpiContract=diff1d_iter diffusion1d.c
-#	$(CIVL) $(VERIFY2) -mpiContract=diff1d_iter diffusion1d.c
-#	$(CIVL) $(VERIFY3) -mpiContract=diff1d_iter diffusion1d.c
-#	$(CIVL) $(VERIFY4) -mpiContract=diff1d_iter diffusion1d.c
 	$(CIVL) $(VERIFY5) -mpiContract=diff1d_iter diffusion1d.c
 
 diff1d_bad: diffusion1d_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=diff1d_iter diffusion1d_bad.c
 
 dotProd: dotProd.c
-#	$(CIVL) $(VERIFY1) -mpiContract=hypre_ParVectorInnerProd dotProd.c
-#	$(CIVL) $(VERIFY2) -mpiContract=hypre_ParVectorInnerProd dotProd.c
-#	$(CIVL) $(VERIFY3) -mpiContract=hypre_ParVectorInnerProd dotProd.c
-#	$(CIVL) $(VERIFY4) -mpiContract=hypre_ParVectorInnerProd dotProd.c
 	$(CIVL) $(VERIFY5) -mpiContract=hypre_ParVectorInnerProd dotProd.c
 
 dotProd_bad: dotProd_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=hypre_ParVectorInnerProd dotProd_bad.c
 
 oddEven: oddEvenSort.c
-#	$(CIVL) $(VERIFY1) -mpiContract=oddEvenParIter oddEvenSort.c
-#	$(CIVL) $(VERIFY2) -mpiContract=oddEvenParIter oddEvenSort.c
-#	$(CIVL) $(VERIFY3) -mpiContract=oddEvenParIter oddEvenSort.c
-#	$(CIVL) $(VERIFY4) -mpiContract=oddEvenParIter oddEvenSort.c
 	$(CIVL) $(VERIFY5) -mpiContract=oddEvenParIter oddEvenSort.c
 
 oddEven_bad: oddEvenSort_bad.c
 	$(CIVL) $(VERIFY5) -mpiContract=oddEvenParIter oddEvenSort_bad.c
 
 matmat: matmat.c
-#	$(CIVL) $(VERIFY1) -mpiContract=matmat matmat.c
-#	$(CIVL) $(VERIFY2) -mpiContract=matmat matmat.c
-#	$(CIVL) $(VERIFY3) -mpiContract=matmat matmat.c
-#	$(CIVL) $(VERIFY4) -mpiContract=matmat matmat.c
 	$(CIVL) $(VERIFY5) -mpiContract=matmat matmat.c
 
 matmat_bad: matmat_bad.c
@@ -164,10 +111,3 @@ cyc: cyc.c
 
 clean:
 	rm -rf *~ CIVLREP
-
-
-# shell command lists result summary:
-#  cat MAKE_OUTPUT| awk '/civl verify/  {Var = $NF} /== Result ==/ {getline; print Var": "$0}'
-
-# shell command lists bad example result summary:
-#  cat MAKE_BAD_OUTPUT| awk '/civl-contract  verify/  { Var = $NF } match($0, /kind\: .*,/) { print Var ": " substr($0, RSTART, RLENGTH) }'
