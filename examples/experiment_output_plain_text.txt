@@ -1,0 +1,719 @@
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=bcast MPI_Bcast.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+MPI_Bcast.c  (MPI_Bcast.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=bcast MPI_Bcast.c 
+
+=== Stats ===
+   time (s)            : 14.77
+   memory (bytes)      : 1811939328
+   max process count   : 6
+   states              : 61741
+   states saved        : 29256
+   state matches       : 10
+   transitions         : 61745
+   trace steps         : 17894
+   valid calls         : 260286
+   provers             : z3, cvc4
+   prover calls        : 55
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=gather MPI_Gather.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+17s: mem=1792Mb trans=66302 traceSteps=20182 explored=66306 saved=33118 prove=116
+32s: mem=2160Mb trans=122995 traceSteps=38912 explored=123001 saved=63790 prove=142
+47s: mem=2160Mb trans=177256 traceSteps=55583 explored=177262 saved=91046 prove=163
+62s: mem=2160Mb trans=226585 traceSteps=70665 explored=226590 saved=115616 prove=180
+
+=== Source files ===
+MPI_Gather.c  (MPI_Gather.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=gather MPI_Gather.c 
+
+=== Stats ===
+   time (s)            : 68.85
+   memory (bytes)      : 2264924160
+   max process count   : 6
+   states              : 250319
+   states saved        : 126724
+   state matches       : 0
+   transitions         : 250313
+   trace steps         : 77483
+   valid calls         : 1024453
+   provers             : z3, cvc4
+   prover calls        : 199
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=allgather MPI_Allgather.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+17s: mem=1808Mb trans=24004 traceSteps=5146 explored=24008 saved=8569 prove=158
+
+=== Source files ===
+MPI_Allgather.c  (MPI_Allgather.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=allgather MPI_Allgather.c 
+
+=== Stats ===
+   time (s)            : 30.41
+   memory (bytes)      : 1895825408
+   max process count   : 6
+   states              : 41035
+   states saved        : 14606
+   state matches       : 0
+   transitions         : 41029
+   trace steps         : 8725
+   valid calls         : 138914
+   provers             : z3, cvc4
+   prover calls        : 236
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=reduce MPI_Reduce.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+17s: mem=2144Mb trans=90246 traceSteps=27755 explored=90236 saved=44783 prove=33
+32s: mem=2576Mb trans=167801 traceSteps=52088 explored=167789 saved=84069 prove=41
+
+=== Source files ===
+MPI_Reduce.c  (MPI_Reduce.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=reduce MPI_Reduce.c 
+
+=== Stats ===
+   time (s)            : 45.9
+   memory (bytes)      : 2701131776
+   max process count   : 6
+   states              : 239711
+   states saved        : 118278
+   state matches       : 25
+   transitions         : 239730
+   trace steps         : 73299
+   valid calls         : 983271
+   provers             : z3, cvc4
+   prover calls        : 41
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=reduce_scatter MPI_Reduce_scatter.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+z3 query       41: time out
+z3 query       43: time out
+z3 query       83: time out
+17s: mem=1088Mb trans=19914 traceSteps=4550 explored=19913 saved=7436 prove=85
+z3 query       87: time out
+z3 query       89: time out
+z3 query       91: time out
+32s: mem=1312Mb trans=35091 traceSteps=8042 explored=35086 saved=13241 prove=94
+z3 query       93: time out
+z3 query       95: time out
+z3 query       98: time out
+z3 query       101: time out
+47s: mem=1312Mb trans=57447 traceSteps=13653 explored=57440 saved=22350 prove=138
+z3 query       152: time out
+62s: mem=1584Mb trans=72089 traceSteps=16903 explored=72080 saved=27792 prove=155
+z3 query       154: time out
+77s: mem=1584Mb trans=89734 traceSteps=21136 explored=89722 saved=34790 prove=162
+z3 query       161: time out
+z3 query       164: time out
+z3 query       167: time out
+92s: mem=1584Mb trans=108484 traceSteps=25980 explored=108470 saved=42690 prove=169
+z3 query       169: time out
+z3 query       172: time out
+107s: mem=1584Mb trans=120380 traceSteps=28690 explored=120364 saved=47193 prove=175
+z3 query       175: time out
+z3 query       177: time out
+z3 query       180: time out
+122s: mem=1584Mb trans=133116 traceSteps=31756 explored=133097 saved=52262 prove=183
+z3 query       183: time out
+z3 query       187: time out
+z3 query       191: time out
+137s: mem=1584Mb trans=143849 traceSteps=34138 explored=143828 saved=56261 prove=193
+z3 query       194: time out
+152s: mem=1904Mb trans=194962 traceSteps=48346 explored=194942 saved=78831 prove=201
+167s: mem=1904Mb trans=207080 traceSteps=50934 explored=207058 saved=83190 prove=257
+z3 query       258: time out
+182s: mem=1904Mb trans=217919 traceSteps=53385 explored=217896 saved=87289 prove=260
+z3 query       261: time out
+197s: mem=1904Mb trans=231628 traceSteps=56937 explored=231603 saved=93070 prove=263
+z3 query       263: time out
+z3 query       266: time out
+212s: mem=1904Mb trans=240670 traceSteps=58973 explored=240644 saved=96485 prove=269
+z3 query       268: time out
+z3 query       270: time out
+z3 query       272: time out
+227s: mem=1904Mb trans=248094 traceSteps=60551 explored=248067 saved=99122 prove=275
+242s: mem=1904Mb trans=271083 traceSteps=67198 explored=271054 saved=109809 prove=276
+257s: mem=1904Mb trans=281984 traceSteps=69651 explored=281954 saved=113896 prove=280
+z3 query       281: time out
+272s: mem=1904Mb trans=294859 traceSteps=72972 explored=294827 saved=119332 prove=286
+z3 query       285: time out
+z3 query       288: time out
+287s: mem=1904Mb trans=304961 traceSteps=75221 explored=304927 saved=123081 prove=291
+z3 query       292: time out
+z3 query       296: time out
+302s: mem=1904Mb trans=314310 traceSteps=77234 explored=314275 saved=126482 prove=298
+317s: mem=1904Mb trans=351249 traceSteps=88711 explored=351213 saved=144650 prove=300
+z3 query       300: time out
+z3 query       302: time out
+332s: mem=1904Mb trans=363063 traceSteps=91678 explored=363026 saved=149518 prove=304
+z3 query       305: time out
+z3 query       307: time out
+347s: mem=1904Mb trans=372060 traceSteps=93713 explored=372022 saved=152897 prove=309
+z3 query       309: time out
+362s: mem=1904Mb trans=385316 traceSteps=97150 explored=385276 saved=158517 prove=314
+z3 query       313: time out
+z3 query       315: time out
+z3 query       317: time out
+377s: mem=1904Mb trans=392345 traceSteps=98633 explored=392304 saved=161029 prove=320
+z3 query       319: time out
+z3 query       322: time out
+z3 query       324: time out
+392s: mem=1904Mb trans=399932 traceSteps=100380 explored=399890 saved=163938 prove=327
+z3 query       327: time out
+z3 query       329: time out
+z3 query       331: time out
+407s: mem=1904Mb trans=406805 traceSteps=101794 explored=406762 saved=166330 prove=334
+z3 query       334: time out
+422s: mem=1904Mb trans=426576 traceSteps=107751 explored=426532 saved=175832 prove=337
+z3 query       337: time out
+437s: mem=1904Mb trans=436849 traceSteps=110136 explored=436803 saved=179797 prove=342
+z3 query       341: time out
+z3 query       345: time out
+z3 query       348: time out
+452s: mem=1904Mb trans=444709 traceSteps=111748 explored=444662 saved=182539 prove=350
+z3 query       351: time out
+z3 query       354: time out
+467s: mem=1904Mb trans=455838 traceSteps=114706 explored=455791 saved=187339 prove=356
+z3 query       356: time out
+z3 query       359: time out
+482s: mem=1904Mb trans=465662 traceSteps=116995 explored=465611 saved=191142 prove=362
+z3 query       362: time out
+z3 query       365: time out
+z3 query       367: time out
+497s: mem=1904Mb trans=471971 traceSteps=118322 explored=471920 saved=193390 prove=370
+z3 query       369: time out
+z3 query       372: time out
+z3 query       374: time out
+513s: mem=1904Mb trans=486156 traceSteps=122429 explored=486104 saved=199985 prove=377
+
+=== Source files ===
+MPI_Reduce_scatter.c  (MPI_Reduce_scatter.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=reduce_scatter MPI_Reduce_scatter.c 
+
+=== Stats ===
+   time (s)            : 517.25
+   memory (bytes)      : 1996488704
+   max process count   : 6
+   states              : 514019
+   states saved        : 211541
+   state matches       : 57
+   transitions         : 514070
+   trace steps         : 129519
+   valid calls         : 2342393
+   provers             : z3, cvc4
+   prover calls        : 377
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+17s: mem=1616Mb trans=52478 traceSteps=16571 explored=52470 saved=25974 prove=123
+32s: mem=1952Mb trans=94764 traceSteps=30972 explored=94748 saved=48318 prove=125
+47s: mem=1952Mb trans=151919 traceSteps=48052 explored=151899 saved=75114 prove=138
+62s: mem=1952Mb trans=183129 traceSteps=59660 explored=183108 saved=92678 prove=204
+77s: mem=1952Mb trans=209481 traceSteps=68715 explored=209457 saved=106594 prove=208
+92s: mem=1952Mb trans=238628 traceSteps=79117 explored=238601 saved=122497 prove=208
+107s: mem=1952Mb trans=264465 traceSteps=88053 explored=264434 saved=136224 prove=210
+122s: mem=1952Mb trans=290686 traceSteps=97120 explored=290652 saved=150183 prove=210
+137s: mem=1952Mb trans=331590 traceSteps=112267 explored=331554 saved=173135 prove=210
+152s: mem=1952Mb trans=359871 traceSteps=122332 explored=359832 saved=188508 prove=210
+167s: mem=1952Mb trans=385335 traceSteps=131183 explored=385293 saved=202114 prove=210
+182s: mem=1952Mb trans=415981 traceSteps=142583 explored=415938 saved=219389 prove=210
+197s: mem=1952Mb trans=442284 traceSteps=151614 explored=442236 saved=233283 prove=210
+212s: mem=1952Mb trans=468889 traceSteps=160658 explored=468837 saved=247254 prove=210
+
+=== Source files ===
+MPI_Reduce_scatter_nc.c  (MPI_Reduce_scatter_nc.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=reduce_scatter MPI_Reduce_scatter_nc.c 
+
+=== Stats ===
+   time (s)            : 219.93
+   memory (bytes)      : 2046820352
+   max process count   : 6
+   states              : 505221
+   states saved        : 264215
+   state matches       : 57
+   transitions         : 505272
+   trace steps         : 171441
+   valid calls         : 3123281
+   provers             : z3, cvc4
+   prover calls        : 210
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=allreduce MPI_Allreduce.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+MPI_Allreduce.c  (MPI_Allreduce.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=allreduce MPI_Allreduce.c 
+
+=== Stats ===
+   time (s)            : 15.63
+   memory (bytes)      : 1660944384
+   max process count   : 6
+   states              : 40129
+   states saved        : 14174
+   state matches       : 5
+   transitions         : 40128
+   trace steps         : 8496
+   valid calls         : 136638
+   provers             : z3, cvc4
+   prover calls        : 37
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=allreduce MPI_Allreduce_double_recursive.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+MPI_Allreduce_double_recursive.c  (MPI_Allreduce_double_recursive.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=allreduce MPI_Allreduce_double_recursive.c 
+
+=== Stats ===
+   time (s)            : 4.87
+   memory (bytes)      : 754974720
+   max process count   : 6
+   states              : 17999
+   states saved        : 7390
+   state matches       : 0
+   transitions         : 17993
+   trace steps         : 4655
+   valid calls         : 67406
+   provers             : z3, cvc4
+   prover calls        : 12
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=scatter MPI_Scatter.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+17s: mem=1808Mb trans=66538 traceSteps=19739 explored=66541 saved=32430 prove=141
+32s: mem=2176Mb trans=127046 traceSteps=37759 explored=127052 saved=61837 prove=191
+47s: mem=2176Mb trans=183945 traceSteps=55370 explored=183949 saved=90898 prove=213
+62s: mem=2176Mb trans=230215 traceSteps=70061 explored=230221 saved=114988 prove=248
+
+=== Source files ===
+MPI_Scatter.c  (MPI_Scatter.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=scatter MPI_Scatter.c 
+
+=== Stats ===
+   time (s)            : 69.3
+   memory (bytes)      : 2281701376
+   max process count   : 6
+   states              : 252678
+   states saved        : 125900
+   state matches       : 0
+   transitions         : 252672
+   trace steps         : 76745
+   valid calls         : 1007529
+   provers             : z3, cvc4
+   prover calls        : 284
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=exchange_ghost_cells diffusion1d.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+17s: mem=1504Mb trans=80843 traceSteps=20420 explored=80807 saved=33650 prove=284
+32s: mem=2176Mb trans=166455 traceSteps=41748 explored=166376 saved=68936 prove=522
+47s: mem=2624Mb trans=248167 traceSteps=62109 explored=248049 saved=102571 prove=800
+62s: mem=2624Mb trans=318305 traceSteps=79534 explored=318162 saved=131229 prove=997
+77s: mem=2624Mb trans=391123 traceSteps=97406 explored=390953 saved=160744 prove=1176
+92s: mem=2624Mb trans=463165 traceSteps=115088 explored=462967 saved=189949 prove=1364
+107s: mem=2624Mb trans=533564 traceSteps=132444 explored=533339 saved=218559 prove=1563
+122s: mem=2624Mb trans=605568 traceSteps=150154 explored=605317 saved=247794 prove=1730
+137s: mem=2624Mb trans=676991 traceSteps=167654 explored=676712 saved=276739 prove=1914
+152s: mem=2624Mb trans=747397 traceSteps=184940 explored=747091 saved=305300 prove=2095
+167s: mem=2624Mb trans=818937 traceSteps=202474 explored=818605 saved=334231 prove=2261
+182s: mem=3152Mb trans=890369 traceSteps=219832 explored=890007 saved=362926 prove=2457
+197s: mem=3152Mb trans=958418 traceSteps=236456 explored=958030 saved=390355 prove=2670
+212s: mem=3152Mb trans=1026670 traceSteps=253179 explored=1026256 saved=417947 prove=2864
+227s: mem=3152Mb trans=1098393 traceSteps=270400 explored=1097947 saved=446397 prove=3060
+242s: mem=3152Mb trans=1167753 traceSteps=287353 explored=1167281 saved=474486 prove=3247
+257s: mem=3152Mb trans=1234510 traceSteps=303763 explored=1234010 saved=501652 prove=3447
+272s: mem=3152Mb trans=1302971 traceSteps=320574 explored=1302445 saved=529515 prove=3617
+287s: mem=3152Mb trans=1371829 traceSteps=337412 explored=1371276 saved=557376 prove=3793
+302s: mem=3152Mb trans=1440625 traceSteps=354072 explored=1440043 saved=584969 prove=3993
+317s: mem=3152Mb trans=1509813 traceSteps=370832 explored=1509202 saved=612602 prove=4181
+332s: mem=3152Mb trans=1576069 traceSteps=386990 explored=1575431 saved=639300 prove=4405
+347s: mem=3152Mb trans=1641753 traceSteps=403249 explored=1641091 saved=666203 prove=4593
+362s: mem=3152Mb trans=1707712 traceSteps=419435 explored=1707025 saved=692950 prove=4783
+377s: mem=3152Mb trans=1774568 traceSteps=435848 explored=1773855 saved=720124 prove=4956
+392s: mem=3152Mb trans=1840411 traceSteps=451965 explored=1839671 saved=746804 prove=5143
+407s: mem=3152Mb trans=1905472 traceSteps=467773 explored=1904706 saved=772877 prove=5339
+422s: mem=3152Mb trans=1970336 traceSteps=483423 explored=1969541 saved=798675 prove=5573
+437s: mem=3664Mb trans=2035075 traceSteps=499236 explored=2034255 saved=824633 prove=5739
+452s: mem=3664Mb trans=2100680 traceSteps=515190 explored=2099833 saved=850996 prove=5932
+467s: mem=3664Mb trans=2165784 traceSteps=531036 explored=2164909 saved=877159 prove=6129
+
+=== Source files ===
+diffusion1d.c  (diffusion1d.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=exchange_ghost_cells diffusion1d.c 
+
+=== Stats ===
+   time (s)            : 477.92
+   memory (bytes)      : 3841982464
+   max process count   : 6
+   states              : 2214825
+   states saved        : 896869
+   state matches       : 902
+   transitions         : 2215721
+   trace steps         : 542977
+   valid calls         : 11774956
+   provers             : z3, cvc4
+   prover calls        : 6285
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=diff1d_iter diffusion1d.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+z3 query       18: time out
+cvc4 query       19: time out
+z3 query       20: time out
+cvc4 query       21: time out
+z3 query       29: time out
+z3 query       31: time out
+17s: mem=576Mb trans=3727 traceSteps=920 explored=3730 saved=1453 prove=34
+z3 query       33: time out
+cvc4 query       34: time out
+z3 query       35: time out
+z3 query       37: time out
+cvc4 query       38: time out
+z3 query       47: time out
+32s: mem=576Mb trans=6290 traceSteps=1575 explored=6294 saved=2503 prove=50
+z3 query       49: time out
+z3 query       51: time out
+z3 query       53: time out
+cvc4 query       54: time out
+z3 query       55: time out
+z3 query       57: time out
+z3 query       59: time out
+47s: mem=576Mb trans=6746 traceSteps=1655 explored=6750 saved=2641 prove=61
+cvc4 query       60: time out
+z3 query       61: time out
+z3 query       63: time out
+cvc4 query       64: time out
+z3 query       73: time out
+z3 query       75: time out
+z3 query       77: time out
+62s: mem=736Mb trans=9986 traceSteps=2454 explored=9991 saved=3928 prove=80
+z3 query       79: time out
+cvc4 query       80: time out
+z3 query       81: time out
+z3 query       83: time out
+z3 query       85: time out
+z3 query       87: time out
+cvc4 query       88: time out
+77s: mem=736Mb trans=10424 traceSteps=2545 explored=10429 saved=4081 prove=90
+z3 query       89: time out
+z3 query       91: time out
+z3 query       93: time out
+cvc4 query       94: time out
+z3 query       95: time out
+z3 query       97: time out
+cvc4 query       98: time out
+92s: mem=736Mb trans=11539 traceSteps=2828 explored=11544 saved=4524 prove=99
+
+=== Source files ===
+diffusion1d.c  (diffusion1d.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=diff1d_iter diffusion1d.c 
+
+=== Stats ===
+   time (s)            : 92.07
+   memory (bytes)      : 771751936
+   max process count   : 6
+   states              : 12328
+   states saved        : 4762
+   state matches       : 0
+   transitions         : 12322
+   trace steps         : 2953
+   valid calls         : 50551
+   provers             : z3, cvc4
+   prover calls        : 99
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=hypre_ParVectorInnerProd dotProd.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+dotProd.c  (dotProd.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=hypre_ParVectorInnerProd dotProd.c 
+
+=== Stats ===
+   time (s)            : 8.22
+   memory (bytes)      : 1207959552
+   max process count   : 6
+   states              : 12583
+   states saved        : 4690
+   state matches       : 0
+   transitions         : 12577
+   trace steps         : 2888
+   valid calls         : 61761
+   provers             : z3, cvc4
+   prover calls        : 61
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=oddEvenParIter oddEvenSort.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+oddEvenSort.c  (oddEvenSort.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=oddEvenParIter oddEvenSort.c 
+
+=== Stats ===
+   time (s)            : 7.67
+   memory (bytes)      : 1040187392
+   max process count   : 6
+   states              : 36116
+   states saved        : 14216
+   state matches       : 0
+   transitions         : 36110
+   trace steps         : 8446
+   valid calls         : 149485
+   provers             : z3, cvc4
+   prover calls        : 52
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=matmat matmat.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+z3 query       20: time out
+z3 query       23: time out
+z3 query       25: time out
+z3 query       28: time out
+z3 query       30: time out
+z3 query       32: time out
+17s: mem=544Mb trans=2696 traceSteps=585 explored=2697 saved=905 prove=35
+z3 query       34: time out
+z3 query       36: time out
+z3 query       38: time out
+z3 query       40: time out
+z3 query       42: time out
+z3 query       44: time out
+z3 query       46: time out
+32s: mem=544Mb trans=3453 traceSteps=749 explored=3454 saved=1176 prove=49
+z3 query       48: time out
+z3 query       54: time out
+z3 query       57: time out
+z3 query       59: time out
+z3 query       62: time out
+z3 query       64: time out
+z3 query       66: time out
+47s: mem=544Mb trans=5831 traceSteps=1272 explored=5833 saved=2019 prove=69
+z3 query       68: time out
+z3 query       70: time out
+z3 query       72: time out
+z3 query       76: time out
+z3 query       79: time out
+z3 query       81: time out
+62s: mem=656Mb trans=6980 traceSteps=1496 explored=6983 saved=2407 prove=84
+z3 query       83: time out
+z3 query       85: time out
+z3 query       87: time out
+z3 query       89: time out
+z3 query       91: time out
+z3 query       93: time out
+z3 query       95: time out
+77s: mem=656Mb trans=7815 traceSteps=1673 explored=7817 saved=2702 prove=98
+z3 query       97: time out
+z3 query       99: time out
+z3 query       113: time out
+z3 query       116: time out
+z3 query       118: time out
+z3 query       121: time out
+z3 query       123: time out
+92s: mem=800Mb trans=10660 traceSteps=2319 explored=10664 saved=3740 prove=126
+z3 query       125: time out
+z3 query       129: time out
+z3 query       131: time out
+z3 query       137: time out
+z3 query       139: time out
+107s: mem=960Mb trans=14287 traceSteps=2998 explored=14290 saved=4923 prove=142
+z3 query       141: time out
+z3 query       143: time out
+z3 query       145: time out
+z3 query       160: time out
+z3 query       163: time out
+z3 query       165: time out
+z3 query       167: time out
+122s: mem=1152Mb trans=17634 traceSteps=3773 explored=17638 saved=6166 prove=170
+z3 query       169: time out
+z3 query       171: time out
+z3 query       173: time out
+z3 query       177: time out
+z3 query       180: time out
+z3 query       182: time out
+137s: mem=1152Mb trans=19161 traceSteps=4037 explored=19166 saved=6641 prove=185
+z3 query       184: time out
+z3 query       186: time out
+z3 query       188: time out
+z3 query       190: time out
+z3 query       194: time out
+z3 query       197: time out
+z3 query       199: time out
+152s: mem=1152Mb trans=20814 traceSteps=4314 explored=20819 saved=7140 prove=202
+z3 query       201: time out
+z3 query       203: time out
+z3 query       205: time out
+z3 query       207: time out
+z3 query       211: time out
+z3 query       214: time out
+167s: mem=1392Mb trans=22089 traceSteps=4551 explored=22094 saved=7552 prove=217
+z3 query       216: time out
+z3 query       218: time out
+z3 query       220: time out
+z3 query       222: time out
+z3 query       224: time out
+z3 query       226: time out
+z3 query       228: time out
+182s: mem=1392Mb trans=22972 traceSteps=4728 explored=22976 saved=7847 prove=231
+z3 query       230: time out
+z3 query       232: time out
+z3 query       234: time out
+
+=== Source files ===
+matmat.c  (matmat.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=matmat matmat.c 
+
+=== Stats ===
+   time (s)            : 189.64
+   memory (bytes)      : 1459617792
+   max process count   : 6
+   states              : 24395
+   states saved        : 8345
+   state matches       : 0
+   transitions         : 24389
+   trace steps         : 5022
+   valid calls         : 87073
+   provers             : z3, cvc4
+   prover calls        : 237
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=g cyc.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+cyc.c  (cyc.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=g cyc.c 
+
+=== Stats ===
+   time (s)            : 3.14
+   memory (bytes)      : 587202560
+   max process count   : 6
+   states              : 8912
+   states saved        : 3562
+   state matches       : 0
+   transitions         : 8906
+   trace steps         : 2104
+   valid calls         : 32004
+   provers             : z3, cvc4
+   prover calls        : 6
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1  -mpiContract=f cyc.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+cyc.c  (cyc.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs_hi=5 -input_mpi_nprocs_lo=1 -mpiContract=f cyc.c 
+
+=== Stats ===
+   time (s)            : 14.69
+   memory (bytes)      : 1577058304
+   max process count   : 6
+   states              : 23084
+   states saved        : 7913
+   state matches       : 0
+   transitions         : 23078
+   trace steps         : 4400
+   valid calls         : 102386
+   provers             : z3, cvc4
+   prover calls        : 11
+
+=== Result ===
+The standard properties hold for all executions.
+java -jar -Xmx20g ../civl.jar verify -input_mpi_nprocs=1 -mpiContract=update -loop diffusion1d.c
+CIVL v1.20+ of 2019-09-27 -- http://vsl.cis.udel.edu/civl
+
+=== Source files ===
+diffusion1d.c  (diffusion1d.c)
+
+
+=== Command ===
+civl verify -input_mpi_nprocs=1 -mpiContract=update -loop diffusion1d.c 
+
+=== Stats ===
+   time (s)            : 1.95
+   memory (bytes)      : 452984832
+   max process count   : 2
+   states              : 224
+   states saved        : 109
+   state matches       : 0
+   transitions         : 222
+   trace steps         : 66
+   valid calls         : 445
+   provers             : z3, cvc4
+   prover calls        : 15
+
+=== Result ===
+The standard properties hold for all executions.

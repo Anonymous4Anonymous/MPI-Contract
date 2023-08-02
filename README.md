@@ -20,6 +20,8 @@ This is the Artifact for the ICSE 2024 submission: Collective Contracts for Mess
       or number of explored states.  Significant difference should not
       be observed.
 
+- `civl.jar`: the Java executable of the prototype tool used for the experiment
+
 
 ## Build the prototype and run the experiment
 
@@ -34,5 +36,7 @@ This is the Artifact for the ICSE 2024 submission: Collective Contracts for Mess
 
 - run the experiment with the following steps:
     - `cd examples`
-    - `make config`: help CIVL finds the installed provers
+    - help CIVL finds the installed provers;
+        - `make config`; or
+        - `cp ../civl_config_used_for_experiment ~/.sarl` 
     - `make`: run the experiments with up to 5 processes

@@ -144,11 +144,10 @@ HYPRE_Real hypre_ParVectorInnerProd( hypre_ParVector *x,
 				     hypre_ParVector *y )
 {
   MPI_Comm      comm    = hypre_ParVectorComm(x);
-  hypre_Vector *x_local = hypre_ParVectorLocalVector(x);
-  hypre_Vector *y_local = hypre_ParVectorLocalVector(y);
+  hypre_Vector *my_x = hypre_ParVectorLocalVector(x), *my_y = hypre_ParVectorLocalVector(y);
   
   HYPRE_Real result = 0.0;
-  HYPRE_Real local_result = hypre_SeqVectorInnerProd(x_local, y_local);
+  HYPRE_Real local_result = hypre_SeqVectorInnerProd(my_x, my_y);
   
   
   hypre_MPI_Allreduce(&local_result, &result, 1, hypre_MPI_REAL, hypre_MPI_SUM, comm);
