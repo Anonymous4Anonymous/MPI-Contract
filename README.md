@@ -22,6 +22,8 @@ This is the Artifact for the ICSE 2024 submission: Collective Contracts for Mess
 
 - `civl.jar`: the Java executable of the prototype tool used for the experiment
 
+- `experiment_output_plain_text.txt`: the plain text output of the experiment
+
 
 ## Build the prototype and run the experiment
 
