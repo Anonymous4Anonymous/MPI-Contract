@@ -1,4 +1,4 @@
-This is the Artifact for the ICSE 2024 submission: Collective Contracts for Message-Passing Parallel Programs
+This is the Artifact for the CAV 2024 submission: Collective Contracts for Message-Passing Parallel Programs
 
 ## Contents
 - `tech_report.pdf`: the extended technical report, including
