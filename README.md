@@ -16,7 +16,7 @@
   
 - `experiment_output_plain_text.txt`: the original output log of the
                                       experiment we reported in the
-                                      paper.				      
+                                      publication				      
 
 - `tech_report.pdf`: the extended version of the publication
 
