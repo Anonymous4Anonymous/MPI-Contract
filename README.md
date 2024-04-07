@@ -12,7 +12,7 @@
 - `Makefile`: type `make` to build a new `civl.jar` from the source
   
 - `civl_config_used_for_experiment`: the CIVL configuration file we used
-                                     in the experiment reported in the paper
+                                     in the experiment
   
 - `experiment_output_plain_text.txt`: the original output log of the
                                       experiment we reported in the
