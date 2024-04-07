@@ -273,8 +273,9 @@ public class RobustCVCTheoremProver implements TheoremProver {
 				if (info.getTimeout() > 0 && !ProcessControl
 						.waitForProcess(process, info.getTimeout())) {
 					if (info.getShowErrors() || info.getShowInconclusives())
-						err.println(info.getFirstAlias() + " query       " + id
-								+ ": time out");
+					    ;
+					//	err.println(info.getFirstAlias() + " query       " + id
+					//			+ ": time out");
 					result = Prove.RESULT_MAYBE;
 				} else {
 					result = readCVCOutput(stdout, stderr);

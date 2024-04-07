@@ -465,8 +465,22 @@ public class LibmpiEvaluator extends BaseLibraryEvaluator
 						rdcResult);
 				result = universe.forallInt(fv, universe.zeroInt(), count,
 						result);
-			}
 				break;
+			}
+			case CIVL_MAX : {
+			    for (SymbolicExpression operand : operands[0]) {
+				NumericExpression NewOp = (NumericExpression) universe.arrayRead(operand,
+												 fv);				
+				BooleanExpression claim = universe.lessThan((NumericExpression) rdcResult,
+							  NewOp);
+				rdcResult = (NumericExpression)universe.cond(claim, NewOp, rdcResult);
+			    }
+				result = universe.equals(universe.arrayRead(value, fv),
+						rdcResult);
+				result = universe.forallInt(fv, universe.zeroInt(), count,
+						result);
+				break;
+			}
 			default :
 				throw new CIVLInternalException("unreachable", source);
 		}

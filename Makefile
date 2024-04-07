@@ -15,6 +15,9 @@ ABC: src/ABC
 CIVL: src/CIVL
 	cd src/CIVL && ant
 
+config: civl.jar
+	java -jar civl.jar config
+
 clean:
 	cd src/GMC && ant clean
 	cd src/SARL && ant clean
