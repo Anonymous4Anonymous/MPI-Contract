@@ -23,7 +23,7 @@
 - `abstract.pdf`: the artifact abstract including a quick tutorial on
   how to create new examples
 
-- `tutorial': containing two extra examples we used in `abstract.pdf`
+- `tutorial`: containing two extra examples we used in `abstract.pdf`
   for a quick tutorial of how to create new examples
 
 ## Build the prototype and run the experiment
