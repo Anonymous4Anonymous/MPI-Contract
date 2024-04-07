@@ -11,9 +11,6 @@
 
 - `Makefile`: type `make` to build a new `civl.jar` from the source
 
-- `tutorial.c': the simple example we used as a tutorial for how to
-                create new examples in the artifact abstract.
-
 - `experiment_output_plain_text.txt`: the original output log of the
                                       experiment we reported in the
                                       paper.				      
@@ -22,6 +19,9 @@
 
 - `abstract.pdf`: the artifact abstract including a quick tutorial on
   how to create new examples
+
+- `tutorial': containing two extra examples we used in `abstract.pdf`
+  for a quick tutorial of how to create new examples
 
 ## Build the prototype and run the experiment
 
@@ -58,9 +58,8 @@
 
 - Use the following incantations to verify user-provided functions.
 
-  `java -jar civl.jar verify -input_mpi_nprocs_hi=[higher] -input_mpi_nprocs_lo=[lower] -mpiContract=[funcname] [filename]`
-  or
-  `java -jar civl.jar verify -input_mpi_nprocs=[nprocs] -mpiContract=[funcname] [filename]`
+    - `java -jar civl.jar verify -input_mpi_nprocs_hi=[higher] -input_mpi_nprocs_lo=[lower] -mpiContract=[funcname] [filename]` or
+    - `java -jar civl.jar verify -input_mpi_nprocs=[nprocs] -mpiContract=[funcname] [filename]`
 
    - higher: the higher bound on the number of MPI processes
    - lower: the lower bound on the number of MPI processes
