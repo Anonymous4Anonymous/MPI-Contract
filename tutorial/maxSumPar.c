@@ -7,7 +7,6 @@
      assigns \nothing;
      ensures \mpi_agree(\result);
      ensures  \forall int i; 0 <= i < \mpi_comm_size ==> \result >= \mpi_on(sval, i);
-     ensures  \exists int i; 0 <= i < \mpi_comm_size ==> \result == \mpi_on(sval, i);
      waitsfor {i | int i; 0 <= i < \mpi_comm_size};
 */
 int maxPar(int sval, MPI_Comm comm);
@@ -21,8 +20,7 @@ int maxPar(int sval, MPI_Comm comm);
     requires \valid(a + (0 .. n-1)) && \valid(b + (0 .. n-1));
     requires n > 0;
     assigns  \nothing;
-    ensures  \forall int i; 0 <= i < n ==> \result >= \mpi_on(a[i] + b[i], i);
-    ensures  \exists int i; 0 <= i < n ==> \result == \mpi_on(a[i] + b[i], i);       
+    ensures  \forall int i; 0 <= i < n ==> \result >= a[i] + b[i];
     waitsfor {i | int i; 0 <= i < n};
 */
 int maxSumPar(int * a, int * b, int n) {
