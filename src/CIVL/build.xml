@@ -10,7 +10,7 @@
     into reports.
 -->
 
-<project name="CIVL" basedir="." default="jar" xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="CIVL" basedir="." default="jar">
 
 	<!-- Directories -->
 
@@ -38,9 +38,6 @@
 	<property name="junit.data.dir" location="${junit.dir}/data" />
 	<property name="junit.reports.dir" location="${junit.dir}/reports" />
 	<property name="coverage.dir" location="${basedir}/coverage" />
-	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-		<classpath path="${jacoco.jar}" />
-	</taskdef>
 
 	<!-- Benchmark  -->
 
@@ -158,19 +155,6 @@
 	-->
 
 	<target name="test-run" depends="test-compile">
-	  <jacoco:coverage
-	      excludes="*Listener*:*Lexer*:*Parser*"
-	      includes="edu/udel/cis/vsl/civl/*">
-	    <junit fork="true" forkmode="perTest" threads="${nthreads}" timeout="900000">
-	      <jvmarg value="-ea" />
-	      <classpath refid="test.execute.classpath" />
-	      <formatter type="brief" usefile="false" />
-	      <formatter type="xml" />
-	      <batchtest todir="${junit.data.dir}">
-		<fileset dir="${test.bin.dir}" includes="**/*Test.class" />
-	      </batchtest>
-	    </junit>
-	  </jacoco:coverage>
 		<junitreport todir="${junit.data.dir}">
 			<fileset dir="${junit.data.dir}">
 				<include name="TEST-*.xml" />
@@ -182,20 +166,6 @@
 	</target>
 
 	<target name="test" depends="test-run">
-		<jacoco:report>
-			<executiondata>
-				<file file="jacoco.exec" />
-			</executiondata>
-			<structure name="Test Coverage Report for CIVL ${revision} Regression Suite">
-				<classfiles>
-					<fileset dir="${bin.dir}" />
-				</classfiles>
-				<sourcefiles encoding="UTF-8">
-					<fileset dir="${src.dir}" />
-				</sourcefiles>
-			</structure>
-			<html destdir="coverage" />
-		</jacoco:report>
 	</target>
 
 	<!-- Benchmark Tasks -->
@@ -235,7 +205,6 @@
 		<delete dir="${javadoc.dir}" />
 		<delete dir="${coverage.dir}" />
 		<delete file="${jar-path}" />
-		<delete file="${basedir}/jacoco.exec" />
 		<delete file="${manifest-file}" />
 		<delete file="${grammar.dir}/Command.tokens" />
 		<delete file="${grammar.dir}/CommandLexer.tokens" />

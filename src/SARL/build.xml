@@ -10,7 +10,7 @@
     into reports.
 -->
 
-<project name="SARL" basedir="." default="jar" xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="SARL" basedir="." default="jar">
 
 	<!-- Directories -->
 
@@ -32,9 +32,6 @@
 	<property name="junit.data.dir" location="${junit.dir}/data" />
 	<property name="junit.reports.dir" location="${junit.dir}/reports" />
 	<property name="coverage.dir" location="${basedir}/coverage" />
-	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-		<classpath path="${jacoco.jar}" />
-	</taskdef>
 
 	<!-- Source compilation and JAR construction -->
 
@@ -89,18 +86,6 @@
 	</target>
 
 	<target name="test-run" depends="test-compile">
-		<jacoco:coverage>
-			<junit fork="true" forkmode="once" timeout="300000">
-				<jvmarg value="-ea" />
-				<sysproperty key="java.library.path" value="${libdir}" />
-				<classpath refid="test.execute.classpath" />
-				<formatter type="brief" usefile="false" />
-				<formatter type="xml" />
-				<batchtest todir="${junit.data.dir}">
-					<fileset dir="${test.bin.dir}" includes="**/*Test.class" />
-				</batchtest>
-			</junit>
-		</jacoco:coverage>
 		<junitreport todir="${junit.data.dir}">
 			<fileset dir="${junit.data.dir}">
 				<include name="TEST-*.xml" />
@@ -112,20 +97,6 @@
 	</target>
 
 	<target name="test" depends="test-run">
-		<jacoco:report>
-			<executiondata>
-				<file file="jacoco.exec" />
-			</executiondata>
-			<structure name="Test Coverage Report for SARL ${revision}">
-				<classfiles>
-					<fileset dir="${bin.dir}" />
-				</classfiles>
-				<sourcefiles encoding="UTF-8">
-					<fileset dir="${src.dir}" />
-				</sourcefiles>
-			</structure>
-			<html destdir="coverage" />
-		</jacoco:report>
 	</target>
 
 
@@ -147,7 +118,6 @@
 		<delete dir="${javadoc.dir}" />
 		<delete file="${jar-path}" />
 		<delete dir="${coverage.dir}" />
-		<delete file="${basedir}/jacoco.exec" />
 	</target>
 
 	<!-- Do everything -->
